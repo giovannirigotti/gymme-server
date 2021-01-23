@@ -1,0 +1,30 @@
+{
+  "name": "gymme-pack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "expres": "^0.0.5",
+    "express": "^4.17.1",
+    "pg": "^8.5.1",
+    "postgres": "^1.0.2",
+    "postgresql": "^0.0.1",
+    "save": "^2.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giovannirigotti/gymme-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/giovannirigotti/gymme-server/issues"
+  },
+  "homepage": "https://github.com/giovannirigotti/gymme-server#readme"
+}
