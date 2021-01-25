@@ -36,6 +36,11 @@ app.listen(port, () => {
 ///                                 ///
 ///////////////////////////////////////
 
+app.get('/', (req, res) => {
+  console.log("Rispondo richiesta: /");
+  res.json("Hello from node server!");
+});
+
 app.post('/login/', (req, res, next) => {
   console.log("Rispondo richiesta:'/login/");
   var to_check = req.body;
@@ -68,9 +73,46 @@ app.post('/login/', (req, res, next) => {
       }
     }
   });
-})
+});
 
+app.post('/add/notifications/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/notifications/");
+  var to_check = req.body;
 
+  var notification_type = to_check.notification_type;
+  var text = to_check.text;
+  var user_id = to_check.user_id;
+
+  var insert_notification_query = "INSERT INTO notifications (notification_type, text, user_id) VALUES ('"+notification_type+"', '"+text+"','"+user_id+"');";
+  con.query(insert_notification_query, function(err, result, fields){
+    if(err){
+      res.json("500");
+      console.log('[PostgreSQL ERROR]', err);
+    }else{
+      res.json("200");
+    }
+  });
+});
+
+app.get('/get/notifications/:user_id', (req, res) => {
+  console.log("Rispondo richiesta: get/notifications/:user_id");
+  var user_id = req.params.user_id;
+  var query = "SELECT * FROM notifications WHERE user_id = '"+ user_id +"';";
+  con.query(query, (err, result) => {
+    if (err) {
+      res.json("500");
+      console.log('[PostgreSQL ERROR]', err);
+    } else {
+      var data = result.rows;
+      if (data.length == 0) {
+        res.json("404");
+        console.log('[No notifications avaiable]');
+      } else {
+        res.json(data);
+      }
+    }
+  });
+});
 
 
 ///////////////////////////////////////
@@ -148,6 +190,8 @@ app.post('/customer/register/', (req, res, next) => {
     }
   });
 })
+
+
 
 
 ///////////////////////////////////////
