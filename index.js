@@ -39,11 +39,13 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
   console.log("Rispondo richiesta: /");
   res.json("Hello from node server!");
+  res.end();
 });
+
+//////   LOGIN E REGISTRAZIONE    ////
 
 app.post('/login/', (req, res, next) => {
   console.log("Rispondo richiesta:'/login/");
-
 
   var email = req.body.email;
   var user_password = req.body.password;
@@ -52,7 +54,7 @@ app.post('/login/', (req, res, next) => {
   con.query(login_query, function(err, result, fields){
     if(err){
       res.statusCode=500;
-      res.json("500");
+      res.end();
       console.log('[PostgreSQL ERROR]', err);
     }else{
       if(result.rowCount > 0){
@@ -64,33 +66,62 @@ app.post('/login/', (req, res, next) => {
         var birthdate = result.rows[0].birthdate;
         var db_password = result.rows[0].password;
 
-
-
         if(db_password == user_password){
           var to_res = {
             "type": user_type,
             "id":user_id,
-            "name":name, "lastName": lastname,
+            "name":name,
+            "lastName": lastname,
             "email": email,
             "birthDate": birthdate}
 
-
           res.statusCode=200;
           res.json(to_res);
+          res.end();
+          console.log('[LOGIN OK]');
         } else{
           res.statusCode=401;
-          res.json("401");
           console.log('[LOGIN ERROR: password sbagliata]');
+          res.end();
         }
 
       } else{
         res.statusCode=404;
-        res.json("404");
         console.log('[LOGIN ERROR: email sbagliata o non esistente]');
+        res.end();
       }
     }
   });
 });
+
+app.post('/register/user/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/register/user/");
+  var to_add = req.body;
+
+  var name = to_add.name;
+  var lastname = to_add.lastname;
+  var birthdate = to_add.birthdate;
+  var email = to_add.email;
+  var password = to_add.password;
+  var user_type = to_add.user_type;
+
+  //INSERISCO DATI NELLA TABELLO users
+  var register_query = "INSERT INTO users (name, lastname, birthdate, email, password, user_type) VALUES ('"+name+"', '"+lastname+"', TO_DATE('"+birthdate+"', 'DD/MM/YYYY'), '"+email+"', '"+password+"', '"+user_type+"');";
+  con.query(register_query, function(err, result, fields){
+
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      res.statusCode=200;
+      res.end();
+      console.log('[User inserito]');
+    }
+  });
+})
+
+//////   GESTIONE NOTIFICHE    ////
 
 app.post('/insert_notifications/', (req, res, next) => {
   console.log("Rispondo richiesta:'/notifications/");
@@ -103,10 +134,12 @@ app.post('/insert_notifications/', (req, res, next) => {
   var insert_notification_query = "INSERT INTO notifications (notification_type, text, user_id) VALUES ('"+notification_type+"', '"+text+"','"+user_id+"');";
   con.query(insert_notification_query, function(err, result, fields){
     if(err){
-      res.json("500");
+      res.statusCode=500;
+      res.end();
       console.log('[PostgreSQL ERROR]', err);
     }else{
-      res.json("200");
+      res.statusCode=200;
+      res.end();
     }
   });
 });
@@ -117,19 +150,25 @@ app.get('/get_notifications/:user_id', (req, res) => {
   var query = "SELECT * FROM notifications WHERE user_id = '"+ user_id +"';";
   con.query(query, (err, result) => {
     if (err) {
-      res.json("500");
+      res.statusCode=500;
       console.log('[PostgreSQL ERROR]', err);
     } else {
       var data = result.rows;
       if (data.length == 0) {
-        res.json("404");
+        res.statusCode=404;
+        res.end();
         console.log('[No notifications avaiable]');
       } else {
+        res.statusCode=200;
         res.json(data);
+        res.end();
       }
     }
   });
 });
+
+
+//////   GET USER DATA    ////
 
 app.get('/get_user_data/:email', (req, res) => {
   console.log("Rispondo richiesta: /get_user_data/:email");
@@ -137,16 +176,20 @@ app.get('/get_user_data/:email', (req, res) => {
   var userID_query = "SELECT user_id, user_type FROM users WHERE email = \'" + email +"\';";
   con.query(userID_query, function(err, result, fields){
     if(err){
-      res.json("-1");
+      res.statusCode=500;
+      res.end();
       console.log('[PostgreSQL ERROR]', err);
     }else {
       if(result.rowCount > 0){
         var user_id = result.rows[0].user_id;
         var user_type = result.rows[0].user_type;
         var response = user_id+","+user_type;
+        res.statusCode=200;
         res.json(response);
+        res.end();
       } else{
-        res.json("-1");
+        res.statusCode=404;
+        res.end();
         console.log('[Register ERROR]', err);
       }
     }
@@ -179,11 +222,13 @@ app.post('/customer/register/', (req, res, next) => {
   var check_query = "SELECT * FROM users WHERE email = \'" + email +"\';";
   con.query(check_query, function(err, result, fields){
     if(err){
-      res.json("500");
+      res.statusCode=500;
+      res.end();
       console.log('[PostgreSQL ERROR]', err);
     }else {
       if(result.rowCount > 0){
         res.statusCode=500;
+        res.end();
         res.json('User already exists!');
       }
       else{
@@ -192,14 +237,16 @@ app.post('/customer/register/', (req, res, next) => {
         con.query(register_query, function(err, result, fields){
 
           if(err){
-            res.json("500");
+            res.statusCode=500;
+            res.end();
             console.log('[PostgreSQL ERROR]', err);
           }else {
             //PRENDO user_id DELLO USER APPENA INSERITO
             var userID_query = "SELECT user_id FROM users WHERE email = \'" + email +"\';";
             con.query(userID_query, function(err, result, fields){
               if(err){
-                res.json("500");
+                res.statusCode=500;
+                res.end();
                 console.log('[PostgreSQL ERROR]', err);
               }else {
                 if(result.rowCount > 0){
@@ -209,16 +256,19 @@ app.post('/customer/register/', (req, res, next) => {
                   var user_query = "INSERT INTO customers (user_id, height, diseases, allergies) VALUES ('"+user_id+"','"+height+"','"+diseases+"','"+allergies+"');";
                   con.query(user_query, function(err, result, fields){
                     if(err){
-                      res.json("500");
+                      res.statusCode=500;
+                      res.end();
                       console.log('[PostgreSQL ERROR]', err);
                     }else {
                       //SUCCESS FINALE
-                      res.json("200");
+                      res.statusCode=200;
+                      res.end();
+                      console.log('[Registration SUCCESS]');
                     }
                   });
-
                 } else{
-                  res.json("500");
+                  res.statusCode=500;
+                  res.end();
                   console.log('[Register ERROR]', err);
                 }
               }
@@ -230,6 +280,29 @@ app.post('/customer/register/', (req, res, next) => {
   });
 })
 
+app.post('/register/customer/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/register/customer/");
+  var to_add = req.body;
+
+  var user_id = to_add.user_id;
+  var height = to_add.height;
+  var diseases = to_add.diseases;
+  var allergies = to_add.allergies;
+
+  var user_query = "INSERT INTO customers (user_id, height, diseases, allergies) VALUES ('"+user_id+"','"+height+"','"+diseases+"','"+allergies+"');";
+  con.query(user_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      //SUCCESS FINALE
+      res.statusCode=200;
+      res.end();
+      console.log('[Cunsomer aggiunto]');
+    }
+  });
+})
 
 
 
@@ -271,12 +344,14 @@ app.post('/gym/register/', (req, res, next) => {
   var check_query = "SELECT * FROM users WHERE email = \'" + email +"\';";
   con.query(check_query, function(err, result, fields){
     if(err){
-      res.json("500");
+      res.statusCode=500;
+      res.end();
       console.log('[PostgreSQL ERROR]', err);
     }else {
       if(result.rowCount > 0){
         res.statusCode=500;
         res.json('User already exists!');
+        res.end();
       }
       else{
         //INSERISCO DATI NELLA TABELLO users
@@ -284,14 +359,16 @@ app.post('/gym/register/', (req, res, next) => {
         con.query(register_query, function(err, result, fields){
 
           if(err){
-            res.json("500");
+            res.statusCode=500;
+            res.end();
             console.log('[PostgreSQL ERROR]', err);
           }else {
             //PRENDO user_id DELLO USER APPENA INSERITO
             var userID_query = "SELECT user_id FROM users WHERE email = \'" + email +"\';";
             con.query(userID_query, function(err, result, fields){
               if(err){
-                res.json("500");
+                res.statusCode=500;
+                res.end();
                 console.log('[PostgreSQL ERROR]', err);
               }else {
                 if(result.rowCount > 0){
@@ -301,16 +378,20 @@ app.post('/gym/register/', (req, res, next) => {
                   var user_query = "INSERT INTO gyms (user_id, vat_number, gym_name, gym_address ,zip_code ,pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers) VALUES ('"+user_id+"','"+vat_number+"','"+gym_name+"','"+gym_address+"','"+zip_code+"','"+pool+"','"+box_ring+"','"+aerobics+"','"+spa+"','"+wifi+"','"+parking_area+"','"+personal_trainer_service+"','"+nutritionist_service+"','"+impedance_balance+"','"+courses+"','"+showers+"');";
                   con.query(user_query, function(err, result, fields){
                     if(err){
-                      res.json("500");
+                      res.statusCode=500;
+                      res.end();
                       console.log('[PostgreSQL ERROR]', err);
                     }else {
                       //SUCCESS FINALE
-                      res.json("200");
+                      res.statusCode=200;
+                      res.end();
+                      console.log('[Register SUCCESS]');
                     }
                   });
 
                 } else{
-                  res.json("500");
+                  res.statusCode=500;
+                  res.end();
                   console.log('[Register ERROR]', err);
                 }
               }
@@ -318,6 +399,42 @@ app.post('/gym/register/', (req, res, next) => {
           }
         });
       }
+    }
+  });
+})
+
+app.post('/register/gym/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/register/gym/");
+  var to_add = req.body;
+
+  var user_id = to_add.user_id;
+  var vat_number = to_add.vat_number;
+  var gym_name = to_add.gym_name;
+  var gym_address = to_add.gym_address;
+  var zip_code = to_add.zip_code;
+  var pool = to_add.pool;
+  var box_ring = to_add.box_ring;
+  var aerobics = to_add.aerobics;
+  var spa = to_add.spa;
+  var wifi = to_add.wifi;
+  var parking_area = to_add.parking_area;
+  var personal_trainer_service = to_add.personal_trainer_service;
+  var nutritionist_service = to_add.nutritionist_service;
+  var impedance_balance = to_add.impedance_balance;
+  var courses = to_add.courses;
+  var showers = to_add.showers;
+
+  var user_query = "INSERT INTO gyms (user_id, vat_number, gym_name, gym_address ,zip_code ,pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers) VALUES ('"+user_id+"','"+vat_number+"','"+gym_name+"','"+gym_address+"','"+zip_code+"','"+pool+"','"+box_ring+"','"+aerobics+"','"+spa+"','"+wifi+"','"+parking_area+"','"+personal_trainer_service+"','"+nutritionist_service+"','"+impedance_balance+"','"+courses+"','"+showers+"');";
+  con.query(user_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      //SUCCESS FINALE
+      res.statusCode=200;
+      res.end();
+      console.log('[Gym aggiunta]');
     }
   });
 })
@@ -348,12 +465,14 @@ app.post('/trainer/register/', (req, res, next) => {
   var check_query = "SELECT * FROM users WHERE email = \'" + email +"\';";
   con.query(check_query, function(err, result, fields){
     if(err){
-      res.json("500");
+      res.statusCode=500;
+      res.end();
       console.log('[PostgreSQL ERROR]', err);
     }else {
       if(result.rowCount > 0){
         res.statusCode=500;
         res.json('User already exists!');
+        res.end();
       }
       else{
         //INSERISCO DATI NELLA TABELLO users
@@ -361,14 +480,16 @@ app.post('/trainer/register/', (req, res, next) => {
         con.query(register_query, function(err, result, fields){
 
           if(err){
-            res.json("500");
+            res.statusCode=500;
+            res.end();
             console.log('[PostgreSQL ERROR]', err);
           }else {
             //PRENDO user_id DELLO USER APPENA INSERITO
             var userID_query = "SELECT user_id FROM users WHERE email = \'" + email +"\';";
             con.query(userID_query, function(err, result, fields){
               if(err){
-                res.json("500");
+                res.statusCode=500;
+                res.end();
                 console.log('[PostgreSQL ERROR]', err);
               }else {
                 if(result.rowCount > 0){
@@ -378,16 +499,20 @@ app.post('/trainer/register/', (req, res, next) => {
                   var user_query = "INSERT INTO personal_trainers (user_id, qualification, fiscal_code) VALUES ('"+user_id+"','"+qualification+"','"+fiscal_code+"');";
                   con.query(user_query, function(err, result, fields){
                     if(err){
-                      res.json("500");
+                      res.statusCode=500;
+                      res.end();
                       console.log('[PostgreSQL ERROR]', err);
                     }else {
                       //SUCCESS FINALE
-                      res.json("200");
+                    res.statusCode=200;
+                    res.end();
+                    console.log('[Register SUCCESS]');
                     }
                   });
 
                 } else{
-                  res.json("500");
+                  res.statusCode=500;
+                  res.end();
                   console.log('[Register ERROR]', err);
                 }
               }
@@ -395,6 +520,29 @@ app.post('/trainer/register/', (req, res, next) => {
           }
         });
       }
+    }
+  });
+})
+
+app.post('/register/trainer/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/register/trainer/");
+  var to_add = req.body;
+
+  var user_id = to_add.user_id;
+  var qualification = to_add.qualification;
+  var fiscal_code = to_add.fiscal_code;
+
+  var user_query = "INSERT INTO personal_trainers (user_id, qualification, fiscal_code) VALUES ('"+user_id+"','"+qualification+"','"+fiscal_code+"');";
+  con.query(user_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      //SUCCESS FINALE
+      res.statusCode=200;
+      res.end();
+      console.log('[Trainer aggiunto]');
     }
   });
 })
@@ -425,12 +573,14 @@ app.post('/nutritionist/register/', (req, res, next) => {
   var check_query = "SELECT * FROM users WHERE email = \'" + email +"\';";
   con.query(check_query, function(err, result, fields){
     if(err){
-      res.json("500");
+      res.statusCode=500;
+      res.end();
       console.log('[PostgreSQL ERROR]', err);
     }else {
       if(result.rowCount > 0){
         res.statusCode=500;
         res.json('User already exists!');
+        res.end();
       }
       else{
         //INSERISCO DATI NELLA TABELLO users
@@ -438,14 +588,16 @@ app.post('/nutritionist/register/', (req, res, next) => {
         con.query(register_query, function(err, result, fields){
 
           if(err){
-            res.json("500");
+            res.statusCode=500;
+            res.end();
             console.log('[PostgreSQL ERROR]', err);
           }else {
             //PRENDO user_id DELLO USER APPENA INSERITO
             var userID_query = "SELECT user_id FROM users WHERE email = \'" + email +"\';";
             con.query(userID_query, function(err, result, fields){
               if(err){
-                res.json("500");
+                res.statusCode=500;
+                res.end();
                 console.log('[PostgreSQL ERROR]', err);
               }else {
                 if(result.rowCount > 0){
@@ -455,16 +607,20 @@ app.post('/nutritionist/register/', (req, res, next) => {
                   var user_query = "INSERT INTO nutritionists (user_id, qualification, fiscal_code) VALUES ('"+user_id+"','"+qualification+"','"+fiscal_code+"');";
                   con.query(user_query, function(err, result, fields){
                     if(err){
-                      res.json("500");
+                      res.statusCode=500;
+                      res.end();
                       console.log('[PostgreSQL ERROR]', err);
                     }else {
                       //SUCCESS FINALE
-                      res.json("200");
+                      res.statusCode=200;
+                      res.end();
+                      console.log('[Register SUCCESS]');
                     }
                   });
 
                 } else{
-                  res.json("500");
+                  res.statusCode=500;
+                  res.end();
                   console.log('[Register ERROR]', err);
                 }
               }
@@ -472,6 +628,30 @@ app.post('/nutritionist/register/', (req, res, next) => {
           }
         });
       }
+    }
+  });
+})
+
+
+app.post('/register/nutritionist/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/register/nutritionist/");
+  var to_add = req.body;
+
+  var user_id = to_add.user_id;
+  var qualification = to_add.qualification;
+  var fiscal_code = to_add.fiscal_code;
+
+  var user_query = "INSERT INTO nutritionists (user_id, qualification, fiscal_code) VALUES ('"+user_id+"','"+qualification+"','"+fiscal_code+"');";
+  con.query(user_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      //SUCCESS FINALE
+      res.statusCode=200;
+      res.end();
+      console.log('[Nutrizionista aggiunto]');
     }
   });
 })
