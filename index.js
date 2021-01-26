@@ -124,7 +124,7 @@ app.post('/register/user/', (req, res, next) => {
 //////   GESTIONE NOTIFICHE    ////
 
 app.post('/insert_notifications/', (req, res, next) => {
-  console.log("Rispondo richiesta:'/notifications/");
+  console.log("Rispondo richiesta:'/insert_notifications/");
   var to_check = req.body;
 
   var notification_type = to_check.notification_type;
@@ -183,9 +183,13 @@ app.get('/get_user_data/:email', (req, res) => {
       if(result.rowCount > 0){
         var user_id = result.rows[0].user_id;
         var user_type = result.rows[0].user_type;
-        var response = user_id+","+user_type;
         res.statusCode=200;
-        res.json(response);
+        res.json(
+          {
+            "user_id": user_id,
+            "user_type": user_type
+          }
+        );
         res.end();
       } else{
         res.statusCode=404;
