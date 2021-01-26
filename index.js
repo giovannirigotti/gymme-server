@@ -43,31 +43,48 @@ app.get('/', (req, res) => {
 
 app.post('/login/', (req, res, next) => {
   console.log("Rispondo richiesta:'/login/");
-  var to_check = req.body;
 
-  var email = to_check.email;
-  var user_password = to_check.password;
 
-  var login_query = "SELECT user_id, password, user_type FROM users WHERE email = \'" + email +"\';";
+  var email = req.body.email;
+  var user_password = req.body.password;
+
+  var login_query = "SELECT * FROM users WHERE email = \'" + email +"\';";
   con.query(login_query, function(err, result, fields){
     if(err){
+      res.statusCode=500;
       res.json("500");
       console.log('[PostgreSQL ERROR]', err);
     }else{
       if(result.rowCount > 0){
-        var user_id = result.rows[0].user_id;
-        var db_password = result.rows[0].password;
         var user_type = result.rows[0].user_type;
+        var user_id = result.rows[0].user_id;
+        var name = result.rows[0].name;
+        var lastname = result.rows[0].lastname;
+        var email = result.rows[0].email;
+        var birthdate = result.rows[0].birthdate;
+        var db_password = result.rows[0].password;
+
+
 
         if(db_password == user_password){
-          var to_res = user_id+", "+user_type;
+          var to_res = {
+            "type": user_type,
+            "id":user_id,
+            "name":name, "lastName": lastname,
+            "email": email,
+            "birthDate": birthdate}
+
+
+          res.statusCode=200;
           res.json(to_res);
         } else{
-          res.json("403");
+          res.statusCode=401;
+          res.json("401");
           console.log('[LOGIN ERROR: password sbagliata]');
         }
 
       } else{
+        res.statusCode=404;
         res.json("404");
         console.log('[LOGIN ERROR: email sbagliata o non esistente]');
       }
