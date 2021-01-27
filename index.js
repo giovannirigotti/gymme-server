@@ -144,10 +144,59 @@ app.post('/insert_notifications/', (req, res, next) => {
   });
 });
 
-app.get('/get_notifications/:user_id', (req, res) => {
-  console.log("Rispondo richiesta: /get/notifications/:user_id");
+app.get('/update_all_notifications/:user_id', (req, res) => {
+  console.log("Rispondo richiesta: /update_all_notifications/:user_id");
   var user_id = req.params.user_id;
-  var query = "SELECT * FROM notifications WHERE user_id = '"+ user_id +"';";
+  // modifico a -1 il valore di notifications_type per impostare le notifiche come lette
+  var query = "UPDATE notifications SET notification_type = -1 where user_id ='"+ user_id +"' AND notification_type != -1;";
+  con.query(query, (err, result) => {
+    if (err) {
+      res.statusCode=500;
+      console.log('[PostgreSQL ERROR]', err);
+    } else {
+      var data = result.rows;
+      if (data.length == 0) {
+        res.statusCode=404;
+        res.end();
+        console.log('[No notifications avaiable]');
+      } else {
+        res.statusCode=200;
+        res.json(data);
+        res.end();
+      }
+    }
+  });
+});
+
+app.get('/update_a_notification/:id', (req, res) => {
+  console.log("Rispondo richiesta: /update_a_notification/:notification_id");
+  var id = req.params.id;
+  // modifico a -1 il valore di notifications_type per impostare le notifiche come lette
+  var query = "UPDATE notifications SET notification_type = -1 where notification_id ='"+ id +"' AND notification_type != -1;";
+  con.query(query, (err, result) => {
+    if (err) {
+      res.statusCode=500;
+      console.log('[PostgreSQL ERROR]', err);
+    } else {
+      var data = result.rows;
+      if (data.length == 0) {
+        res.statusCode=404;
+        res.end();
+        console.log('[No notifications avaiable]');
+      } else {
+        res.statusCode=200;
+        res.json(data);
+        res.end();
+      }
+    }
+  });
+});
+
+
+app.get('/get_notifications/:user_id', (req, res) => {
+  console.log("Rispondo richiesta: /get_notifications/:user_id");
+  var user_id = req.params.user_id;
+  var query = "SELECT * FROM notifications WHERE user_id = '"+ user_id +"' AND notification_type != -1;";
   con.query(query, (err, result) => {
     if (err) {
       res.statusCode=500;
