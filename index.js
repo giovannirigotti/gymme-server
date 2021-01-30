@@ -192,7 +192,6 @@ app.get('/update_a_notification/:id', (req, res) => {
   });
 });
 
-
 app.get('/get_notifications/:user_id', (req, res) => {
   console.log("Rispondo richiesta: /get_notifications/:user_id");
   var user_id = req.params.user_id;
@@ -217,7 +216,7 @@ app.get('/get_notifications/:user_id', (req, res) => {
 });
 
 
-//////   GET USER DATA    ////
+//////   MENEGE USER DATA    ////
 
 app.get('/get_user_data/:email', (req, res) => {
   console.log("Rispondo richiesta: /get_user_data/:email");
@@ -249,7 +248,72 @@ app.get('/get_user_data/:email', (req, res) => {
   });
 })
 
+app.post('/user/update_password/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/user/update_password/");
+  var to_add = req.body;
 
+  var user_id = to_add.user_id;
+  var old_password = to_add.old_password;
+  var new_password = to_add.new_password;
+
+  var get_old_password = "SELECT password FROM users WHERE user_id = '"+user_id+"';";
+  con.query(get_old_password, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      if(result.rowCount > 0){
+        var password_to_check = result.rows[0].password;
+        if (password_to_check == old_password) {
+          var change_password = "UPDATE users SET password = '"+new_password+"' WHERE user_id ='"+ user_id +"';";
+          con.query(change_password, function(err, result, fields){
+            if(err){
+              res.statusCode=500;
+              res.end();
+              console.log('[PostgreSQL ERROR]', err);
+            }else{
+              res.statusCode=200;
+              res.end();
+              console.log('[PASSWORD AGGIORNATA]');
+            }
+          });
+        }
+        else{
+          res.statusCode=403;
+          res.end();
+          console.log('[LA VECCHIA PASSWORD NON CORRISPONDE]', err);
+        }
+      }
+      else{
+        res.statusCode=404;
+        res.end();
+        console.log('[GET DATA ERROR]', err);
+      }
+
+    }
+  });
+})
+
+app.post('/user/update_email/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/user/update_email/");
+  var to_add = req.body;
+
+  var user_id = to_add.user_id;
+  var email = to_add.email;
+  var change_email = "UPDATE users SET email = '"+email+"' WHERE user_id ='"+ user_id +"';";
+  con.query(change_email, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    } else {
+      res.statusCode=200;
+      res.end();
+      console.log('[EMAIL AGGIORNATA]');
+    }
+  });
+})
 ///////////////////////////////////////
 ///                                 ///
 ///           CUSTOMERS             ///
