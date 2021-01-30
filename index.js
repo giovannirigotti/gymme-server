@@ -243,7 +243,7 @@ app.get('/get_user_data/:email', (req, res) => {
       } else{
         res.statusCode=404;
         res.end();
-        console.log('[Register ERROR]', err);
+        console.log('[GET DATA ERROR]', err);
       }
     }
   });
@@ -324,6 +324,64 @@ app.post('/register/gym/', (req, res, next) => {
   });
 })
 
+app.get('/gym/get_hours/:gym_id', (req, res, next) => {
+  console.log("Rispondo richiesta:'/gym/get_hours/:gym_id");
+  var gym_id = req.params.gym_id;
+  var hours_query = "SELECT * FROM gym_hours WHERE gym_id = \'" + gym_id +"\';";
+  con.query(hours_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      if(result.rowCount > 0){
+        var gym_id = result.rows[0].gym_id;
+        var day = result.rows[0].day;
+        var open = result.rows[0].open;
+        var close = result.rows[0].close;
+        res.statusCode=200;
+        res.json(
+          {
+            "gym_id": gym_id,
+            "day": day,
+            "open": open,
+            "close": close
+          }
+        );
+        res.end();
+      } else{
+        res.statusCode=404;
+        res.end();
+        console.log('[GET ERROR]', err);
+      }
+    }
+  });
+})
+
+
+app.post('/gym/set_hours/', (req, res, next) => {
+  console.log("Rispondo richiesta:'/gym/set_hours/");
+  var to_add = req.body;
+
+  var gym_id = to_add.gym_id;
+  var day = to_add.day;
+  var open = to_add.open;
+  var close = to_add.close;
+
+  var set_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('"+gym_id+"','"+day+"','"+open+"','"+close+"');";
+  con.query(set_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      //SUCCESS FINALE
+      res.statusCode=200;
+      res.end();
+      console.log('[Orario aggiunto]');
+    }
+  });
+})
 
 
 ///////////////////////////////////////
