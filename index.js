@@ -340,6 +340,7 @@ app.get('/user/get_all_data/:user_id', (req, res) => {
           }
         );
         res.end();
+        console.log('[GET USERS DATA OK]');
       } else{
         res.statusCode=404;
         res.end();
@@ -378,7 +379,39 @@ app.post('/register/customer/', (req, res, next) => {
   });
 })
 
-
+app.get('/customer/get_all_data/:user_id', (req, res) => {
+  console.log("Rispondo richiesta: /user/get_all_data/:user_id");
+  var user_id = req.params.user_id;
+  var query = "SELECT * FROM customers WHERE user_id = \'" + user_id +"\';";
+  con.query(query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      if(result.rowCount > 0){
+        var height = result.rows[0].height;
+        var diseases = result.rows[0].diseases;
+        var allergies = result.rows[0].allergies;
+        var email = result.rows[0].email;
+        res.statusCode=200;
+        res.json(
+          {
+            "height": height,
+            "diseases": diseases,
+            "allergies": allergies
+          }
+        );
+        res.end();
+        console.log('[GET CUSTOMERS DATA OK]');
+      } else{
+        res.statusCode=404;
+        res.end();
+        console.log('[GET DATA ERROR]', err);
+      }
+    }
+  });
+})
 
 ///////////////////////////////////////
 ///                                 ///
