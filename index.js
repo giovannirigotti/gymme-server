@@ -335,7 +335,7 @@ app.get('/user/get_all_data/:user_id', (req, res) => {
           {
             "name": name,
             "lastname": lastname,
-            "user_id": user_id,
+            "email": email,
             "birthdate": birthdate
           }
         );
@@ -393,7 +393,6 @@ app.get('/customer/get_all_data/:user_id', (req, res) => {
         var height = result.rows[0].height;
         var diseases = result.rows[0].diseases;
         var allergies = result.rows[0].allergies;
-        var email = result.rows[0].email;
         res.statusCode=200;
         res.json(
           {
