@@ -301,16 +301,39 @@ app.post('/user/update_email/', (req, res, next) => {
 
   var user_id = to_add.user_id;
   var email = to_add.email;
-  var change_email = "UPDATE users SET email = '"+email+"' WHERE user_id ='"+ user_id +"';";
-  con.query(change_email, function(err, result, fields){
+
+  var check_email = "SELECT user_id FROM users WHERE email = '"+email+"';";
+  con.query(check_email, function(err, result, fields){
     if(err){
       res.statusCode=500;
       res.end();
       console.log('[PostgreSQL ERROR]', err);
-    } else {
-      res.statusCode=200;
-      res.end();
-      console.log('[EMAIL AGGIORNATA]');
+    } else{
+      if(result.rowCount > 0){
+        var user_id_to_check = result.rows[0].user_id;
+        if (user_id_to_check == user_id) {
+          res.statusCode=200;
+          res.end();
+          console.log('[EMAIL INVARIATA]');
+        } else{
+          res.statusCode=403;
+          res.end();
+          console.log('[EMAIL GIA ESISTENTE]');
+        }
+      } else{
+        var change_email = "UPDATE users SET email = '"+email+"' WHERE user_id ='"+ user_id +"';";
+        con.query(change_email, function(err, result, fields){
+          if(err){
+            res.statusCode=500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+          } else {
+            res.statusCode=200;
+            res.end();
+            console.log('[EMAIL AGGIORNATA]');
+          }
+        });
+      }
     }
   });
 })
