@@ -435,6 +435,48 @@ app.get('/customer/get_all_data/:user_id', (req, res) => {
   });
 })
 
+app.post('/customer/update_diseases/', (req, res, next) => {
+  console.log("Rispondo richiesta:/customer/update_diseases/");
+  var to_add = req.body;
+
+  var user_id = to_add.user_id;
+  var diseases = to_add.diseases;
+
+  var change_query = "UPDATE customers SET diseases = '"+diseases+"' WHERE user_id ='"+ user_id +"';";
+  con.query(change_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    } else {
+      res.statusCode=200;
+      res.end();
+      console.log('[DISTURBI AGGIORNATI]');
+    }
+  });
+})
+
+app.post('/customer/update_allergies/', (req, res, next) => {
+  console.log("Rispondo richiesta:/customer/update_allergies/");
+  var to_add = req.body;
+
+  var user_id = to_add.user_id;
+  var allergies = to_add.allergies;
+
+  var change_query = "UPDATE customers SET allergies = '"+allergies+"' WHERE user_id ='"+ user_id +"';";
+  con.query(change_query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    } else {
+      res.statusCode=200;
+      res.end();
+      console.log('[ALLERGIE AGGIORNATI]');
+    }
+  });
+})
+
 ///////////////////////////////////////
 ///                                 ///
 ///              GYM                ///
