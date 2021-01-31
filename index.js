@@ -314,6 +314,40 @@ app.post('/user/update_email/', (req, res, next) => {
     }
   });
 })
+
+app.get('/user/get_all_data/:user_id', (req, res) => {
+  console.log("Rispondo richiesta: /user/get_all_data/:user_id");
+  var user_id = req.params.user_id;
+  var query = "SELECT * FROM users WHERE user_id = \'" + user_id +"\';";
+  con.query(query, function(err, result, fields){
+    if(err){
+      res.statusCode=500;
+      res.end();
+      console.log('[PostgreSQL ERROR]', err);
+    }else {
+      if(result.rowCount > 0){
+        var name = result.rows[0].name;
+        var lastname = result.rows[0].lastname;
+        var birthdate = result.rows[0].birthdate;
+        var email = result.rows[0].email;
+        res.statusCode=200;
+        res.json(
+          {
+            "name": name,
+            "lastname": lastname,
+            "user_id": user_id,
+            "birthdate": birthdate
+          }
+        );
+        res.end();
+      } else{
+        res.statusCode=404;
+        res.end();
+        console.log('[GET DATA ERROR]', err);
+      }
+    }
+  });
+})
 ///////////////////////////////////////
 ///                                 ///
 ///           CUSTOMERS             ///
