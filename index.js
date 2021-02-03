@@ -480,7 +480,7 @@ app.post('/customer/update_allergies/', (req, res, next) => {
 ///              GYM                ///
 ///                                 ///
 ///////////////////////////////////////
-app.get('/gym/get_hours/:gym_id', (req, res, next) => {
+app.post('/register/gym/', (req, res, next) => {
 
     console.log("Rispondo richiesta:'/register/gym/");
     var to_add = req.body;
