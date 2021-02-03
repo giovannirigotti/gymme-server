@@ -694,84 +694,6 @@ app.post('/trainer/update_qualification/', (req, res, next) => {
 ///                                 ///
 ///////////////////////////////////////
 
-
-app.post('/register/nutritionist/', (req, res, next) => {
-    console.log("Rispondo richiesta:'/register/nutritionist/");
-    var to_add = req.body;
-
-    var user_id = to_add.user_id;
-    var qualification = to_add.qualification;
-    var fiscal_code = to_add.fiscal_code;
-
-    var user_query = "INSERT INTO nutritionists (user_id, qualification, fiscal_code) VALUES ('" + user_id + "','" + qualification + "','" + fiscal_code + "');";
-    con.query(user_query, function (err, result, fields) {
-        if (err) {
-            res.statusCode = 500;
-            res.end();
-            console.log('[PostgreSQL ERROR]', err);
-        } else {
-            //SUCCESS FINALE
-            res.statusCode = 200;
-            res.end();
-            console.log('[Nutrizionista aggiunto]');
-        }
-    });
-})
-
-
-app.get('/trainer/get_all_data/:user_id', (req, res) => {
-    console.log("Rispondo richiesta: /trainer/get_all_data/:user_id");
-    var user_id = req.params.user_id;
-    var query = "SELECT * FROM personal_trainers WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function (err, result, fields) {
-        if (err) {
-            res.statusCode = 500;
-            res.end();
-            console.log('[PostgreSQL ERROR]', err);
-        } else {
-            if (result.rowCount > 0) {
-                var qualification = result.rows[0].qualification;
-                var fiscal_code = result.rows[0].fiscal_code;
-                res.statusCode = 200;
-                res.json(
-                    {
-                        "qualification": qualification,
-                        "fiscal_code": fiscal_code
-                    }
-                );
-                res.end();
-                console.log('[GET TRAINER DATA OK]');
-            } else {
-                res.statusCode = 404;
-                res.end();
-                console.log('[GET DATA ERROR]', err);
-            }
-        }
-    });
-})
-
-app.post('/trainer/update_qualification/', (req, res, next) => {
-    console.log("Rispondo richiesta:/trainer/update_qualification/");
-    var to_add = req.body;
-
-    var user_id = to_add.user_id;
-    var qualification = to_add.qualification;
-
-    var change_query = "UPDATE personal_trainers SET qualification = '" + qualification + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function (err, result, fields) {
-        if (err) {
-            res.statusCode = 500;
-            res.end();
-            console.log('[PostgreSQL ERROR]', err);
-        } else {
-            res.statusCode = 200;
-            res.end();
-            console.log('[QUALIFICA AGGIORNATA]');
-        }
-    });
-})
-
-
 app.post('/register/nutritionist/', (req, res, next) => {
     console.log("Rispondo richiesta:'/register/nutritionist/");
     var to_add = req.body;
@@ -794,3 +716,55 @@ app.post('/register/nutritionist/', (req, res, next) => {
         }
     });
 });
+
+app.get('/nutritionist/get_all_data/:user_id', (req, res) => {
+    console.log("Rispondo richiesta: /nutritionist/get_all_data/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT * FROM nutritionists WHERE user_id = \'" + user_id + "\';";
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+                var qualification = result.rows[0].qualification;
+                var fiscal_code = result.rows[0].fiscal_code;
+                res.statusCode = 200;
+                res.json(
+                    {
+                        "qualification": qualification,
+                        "fiscal_code": fiscal_code
+                    }
+                );
+                res.end();
+                console.log('[GET NUTRITIONIST DATA OK]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET DATA ERROR]', err);
+            }
+        }
+    });
+})
+
+app.post('/nutritionist/update_qualification/', (req, res, next) => {
+    console.log("Rispondo richiesta:/nutritionist/update_qualification/");
+    var to_add = req.body;
+
+    var user_id = to_add.user_id;
+    var qualification = to_add.qualification;
+
+    var change_query = "UPDATE nutritionists SET qualification = '" + qualification + "' WHERE user_id ='" + user_id + "';";
+    con.query(change_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            res.statusCode = 200;
+            res.end();
+            console.log('[QUALIFICA AGGIORNATA]');
+        }
+    });
+})
