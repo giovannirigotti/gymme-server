@@ -481,8 +481,7 @@ app.post('/customer/update_allergies/', (req, res, next) => {
 ///                                 ///
 ///////////////////////////////////////
 app.post('/register/gym/', (req, res, next) => {
-
-    console.log("Rispondo richiesta:'/register/gym/");
+  console.log("Rispondo richiesta:'/register/gym/");
     var to_add = req.body;
 
     var user_id = to_add.user_id;
@@ -528,24 +527,25 @@ app.post('/register/gym/', (req, res, next) => {
         } else {
             res_data = true;
             console.log('[Dati palestra aggiunti]');
-            for (i = 0; i < 14; i = i + 2) {
+            for (i = 0; i < 14; i=i + 2) {
                 var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + user_id + "','" + Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
+
                 con.query(hours_query, function (err, result, fields) {
                     if (err) {
                         res.statusCode = 500;
                         res.end();
-                        console.log('[Errore nel registrare gli orari della palestra!]')
+                        console.log('[Errore nel registrare gli orari della palestra!]' + err)
                     } else {
-                        console.log('[Gym aggiunta]');
                         res.statusCode = 200;
                         res.end();
+                        console.log('[Orario aggiunto]');
                     }
                 });
             }
         }
 
     });
-})
+});
 
 app.get('/gym/get_hours/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_hours/:gym_id");
