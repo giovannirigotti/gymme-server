@@ -558,20 +558,28 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
             console.log('[PostgreSQL ERROR]', err);
         } else {
             if (result.rowCount > 0) {
-                var gym_id = result.rows[0].gym_id;
-                var day = result.rows[0].day;
-                var open = result.rows[0].open;
-                var close = result.rows[0].close;
-                res.statusCode = 200;
-                res.json(
-                    {
-                        "gym_id": gym_id,
-                        "day": day,
-                        "open": open,
-                        "close": close
-                    }
-                );
-                res.end();
+
+              var j_arr = [];
+
+              for(var i=0; i < result.rowCount;i++){
+                var gym_id = result.rows[i].gym_id;
+                var day = result.rows[i].day;
+                var open = result.rows[i].open;
+                var close = result.rows[i].close;
+
+                var tmp = {
+                    "gym_id": gym_id,
+                    "day": day,
+                    "open": open,
+                    "close": close
+                };
+
+                j_arr.push(tmp);
+              }
+              res.statusCode = 200;
+              res.json(j_arr);
+              res.end();
+              console.log('[GET HOURS SUCCESS]');
             } else {
                 res.statusCode = 404;
                 res.end();
