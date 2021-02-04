@@ -774,7 +774,8 @@ app.post('/trainer/update_qualification/', (req, res, next) => {
 app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /trainer/get_training_sheets/:user_id");
     var user_id = req.params.user_id;
-    var query = "SELECT training_sheet_id, customer_id, trainer_id, creation_date, title, description, status, duration FROM training_sheets WHERE user_id = \'" + user_id + "\';";
+    var query = "SELECT training_sheet_id, customer_id, name, TO_CHAR(creation_date, 'dd Mon YYYY') AS creation_date, title, " +
+        "description, status, duration FROM training_sheets AS T JOIN users AS U ON T.trainer_id=U.user_id WHERE customer_id = \'" + user_id + "\';";
     con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -787,7 +788,7 @@ app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
                 for (var i = 0; i < result.rowCount; i++) {
                     var training_sheet_id = result.rows[i].training_sheet_id;
                     var customer_id = result.rows[i].customer_id;
-                    var training_id = result.rows[i].training_id;
+                    var name = result.rows[i].name;
                     var creation_date = result.rows[i].creation_date;
                     var title = result.rows[i].title;
                     var description = result.rows[i].description;
@@ -797,7 +798,7 @@ app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
                     var tmp = {
                         "training_sheet_id": training_sheet_id,
                         "customer_id": customer_id,
-                        "training_id": training_id,
+                        "trainer_name": name,
                         "creation_date": creation_date,
                         "title": title,
                         "description": description,
