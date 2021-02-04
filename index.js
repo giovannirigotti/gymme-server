@@ -546,6 +546,7 @@ app.post('/register/gym/', (req, res, next) => {
 
     });
 })
+
 app.get('/gym/get_hours/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_hours/:gym_id");
     var gym_id = req.params.gym_id;
@@ -575,6 +576,55 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
                 res.statusCode = 404;
                 res.end();
                 console.log('[GET ERROR]', err);
+            }
+        }
+    });
+})
+
+app.get('/gym/get_boolean_data/:user_id', (req, res) => {
+    console.log("Rispondo richiesta: /gym/get_boolean_data/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers FROM gyms WHERE user_id = \'" + user_id + "\';";
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+                var pool = result.rows[0].pool;
+                var box_ring = result.rows[0].box_ring;
+                var aerobics = result.rows[0].aerobics;
+                var spa = result.rows[0].spa;
+                var wifi = result.rows[0].wifi;
+                var parking_area = result.rows[0].parking_area;
+                var personal_trainer_service = result.rows[0].personal_trainer_service;
+                var nutritionist_service = result.rows[0].nutritionist_service;
+                var impedance_balance = result.rows[0].impedance_balance;
+                var courses = result.rows[0].courses;
+                var showers = result.rows[0].showers;
+                res.statusCode = 200;
+                res.json(
+                    {
+                        "pool" : pool,
+                         "box_ring" : box_ring,
+                         "aerobics" : aerobics,
+                         "spa" : spa,
+                         "wifi" : wifi,
+                         "parking_area" : parking_area,
+                         "personal_trainer_service" : personal_trainer_service,
+                         "nutritionist_service" : nutritionist_service,
+                         "impedance_balance" : impedance_balance,
+                         "courses" : courses,
+                         "showers" : showers
+                    }
+                );
+                res.end();
+                console.log('[GET GYM DATA OK]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET DATA ERROR]', err);
             }
         }
     });
