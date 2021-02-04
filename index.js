@@ -1,6 +1,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var {Pool, Client} = require('pg');
+var {
+    Pool,
+    Client
+} = require('pg');
 
 const hostname = '127.0.0.1';
 const port = 4000;
@@ -22,7 +25,9 @@ con.connect()
 
 var app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 app.listen(port, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
@@ -50,7 +55,7 @@ app.post('/login/', (req, res, next) => {
     var user_password = req.body.password;
 
     var login_query = "SELECT * FROM users WHERE email = \'" + email + "\';";
-    con.query(login_query, function (err, result, fields) {
+    con.query(login_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -107,7 +112,7 @@ app.post('/register/user/', (req, res, next) => {
 
     //INSERISCO DATI NELLA TABELLO users
     var register_query = "INSERT INTO users (name, lastname, birthdate, email, password, user_type) VALUES ('" + name + "', '" + lastname + "', TO_DATE('" + birthdate + "', 'DD/MM/YYYY'), '" + email + "', '" + password + "', '" + user_type + "');";
-    con.query(register_query, function (err, result, fields) {
+    con.query(register_query, function(err, result, fields) {
 
         if (err) {
             res.statusCode = 500;
@@ -132,7 +137,7 @@ app.post('/insert_notifications/', (req, res, next) => {
     var user_id = to_check.user_id;
 
     var insert_notification_query = "INSERT INTO notifications (notification_type, text, user_id) VALUES ('" + notification_type + "', '" + text + "','" + user_id + "');";
-    con.query(insert_notification_query, function (err, result, fields) {
+    con.query(insert_notification_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -222,7 +227,7 @@ app.get('/get_user_data/:email', (req, res) => {
     console.log("Rispondo richiesta: /get_user_data/:email");
     var email = req.params.email;
     var userID_query = "SELECT user_id, user_type FROM users WHERE email = \'" + email + "\';";
-    con.query(userID_query, function (err, result, fields) {
+    con.query(userID_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -232,12 +237,10 @@ app.get('/get_user_data/:email', (req, res) => {
                 var user_id = result.rows[0].user_id;
                 var user_type = result.rows[0].user_type;
                 res.statusCode = 200;
-                res.json(
-                    {
-                        "user_id": user_id,
-                        "user_type": user_type
-                    }
-                );
+                res.json({
+                    "user_id": user_id,
+                    "user_type": user_type
+                });
                 res.end();
             } else {
                 res.statusCode = 404;
@@ -257,7 +260,7 @@ app.post('/user/update_password/', (req, res, next) => {
     var new_password = to_add.new_password;
 
     var get_old_password = "SELECT password FROM users WHERE user_id = '" + user_id + "';";
-    con.query(get_old_password, function (err, result, fields) {
+    con.query(get_old_password, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -267,7 +270,7 @@ app.post('/user/update_password/', (req, res, next) => {
                 var password_to_check = result.rows[0].password;
                 if (password_to_check == old_password) {
                     var change_password = "UPDATE users SET password = '" + new_password + "' WHERE user_id ='" + user_id + "';";
-                    con.query(change_password, function (err, result, fields) {
+                    con.query(change_password, function(err, result, fields) {
                         if (err) {
                             res.statusCode = 500;
                             res.end();
@@ -301,7 +304,7 @@ app.post('/user/update_email/', (req, res, next) => {
     var email = to_add.email;
 
     var check_email = "SELECT user_id FROM users WHERE email = '" + email + "';";
-    con.query(check_email, function (err, result, fields) {
+    con.query(check_email, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -320,7 +323,7 @@ app.post('/user/update_email/', (req, res, next) => {
                 }
             } else {
                 var change_email = "UPDATE users SET email = '" + email + "' WHERE user_id ='" + user_id + "';";
-                con.query(change_email, function (err, result, fields) {
+                con.query(change_email, function(err, result, fields) {
                     if (err) {
                         res.statusCode = 500;
                         res.end();
@@ -340,7 +343,7 @@ app.get('/user/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /user/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM users WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function (err, result, fields) {
+    con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -352,14 +355,12 @@ app.get('/user/get_all_data/:user_id', (req, res) => {
                 var birthdate = result.rows[0].birthdate;
                 var email = result.rows[0].email;
                 res.statusCode = 200;
-                res.json(
-                    {
-                        "name": name,
-                        "lastname": lastname,
-                        "email": email,
-                        "birthdate": birthdate
-                    }
-                );
+                res.json({
+                    "name": name,
+                    "lastname": lastname,
+                    "email": email,
+                    "birthdate": birthdate
+                });
                 res.end();
                 console.log('[GET USERS DATA OK]');
             } else {
@@ -386,7 +387,7 @@ app.post('/register/customer/', (req, res, next) => {
     var allergies = to_add.allergies;
 
     var user_query = "INSERT INTO customers (user_id, height, diseases, allergies) VALUES ('" + user_id + "','" + height + "','" + diseases + "','" + allergies + "');";
-    con.query(user_query, function (err, result, fields) {
+    con.query(user_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -404,7 +405,7 @@ app.get('/customer/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /user/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM customers WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function (err, result, fields) {
+    con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -415,13 +416,11 @@ app.get('/customer/get_all_data/:user_id', (req, res) => {
                 var diseases = result.rows[0].diseases;
                 var allergies = result.rows[0].allergies;
                 res.statusCode = 200;
-                res.json(
-                    {
-                        "height": height,
-                        "diseases": diseases,
-                        "allergies": allergies
-                    }
-                );
+                res.json({
+                    "height": height,
+                    "diseases": diseases,
+                    "allergies": allergies
+                });
                 res.end();
                 console.log('[GET CUSTOMERS DATA OK]');
             } else {
@@ -441,7 +440,7 @@ app.post('/customer/update_diseases/', (req, res, next) => {
     var diseases = to_add.diseases;
 
     var change_query = "UPDATE customers SET diseases = '" + diseases + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function (err, result, fields) {
+    con.query(change_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -462,7 +461,7 @@ app.post('/customer/update_allergies/', (req, res, next) => {
     var allergies = to_add.allergies;
 
     var change_query = "UPDATE customers SET allergies = '" + allergies + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function (err, result, fields) {
+    con.query(change_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -481,7 +480,7 @@ app.post('/customer/update_allergies/', (req, res, next) => {
 ///                                 ///
 ///////////////////////////////////////
 app.post('/register/gym/', (req, res, next) => {
-  console.log("Rispondo richiesta:'/register/gym/");
+    console.log("Rispondo richiesta:'/register/gym/");
     var to_add = req.body;
 
     var user_id = to_add.user_id;
@@ -515,11 +514,12 @@ app.post('/register/gym/', (req, res, next) => {
         to_add.opening_saturday,
         to_add.closing_saturday,
         to_add.opening_sunday,
-        to_add.closing_sunday];
+        to_add.closing_sunday
+    ];
 
 
     var user_query = "INSERT INTO gyms (user_id, vat_number, gym_name, gym_address ,zip_code ,pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers) VALUES ('" + user_id + "','" + vat_number + "','" + gym_name + "','" + gym_address + "','" + zip_code + "','" + pool + "','" + box_ring + "','" + aerobics + "','" + spa + "','" + wifi + "','" + parking_area + "','" + personal_trainer_service + "','" + nutritionist_service + "','" + impedance_balance + "','" + courses + "','" + showers + "');";
-    con.query(user_query, function (err, result, fields) {
+    con.query(user_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -527,10 +527,10 @@ app.post('/register/gym/', (req, res, next) => {
         } else {
             res_data = true;
             console.log('[Dati palestra aggiunti]');
-            for (i = 0; i < 14; i=i + 2) {
+            for (i = 0; i < 14; i = i + 2) {
                 var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + user_id + "','" + Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
 
-                con.query(hours_query, function (err, result, fields) {
+                con.query(hours_query, function(err, result, fields) {
                     if (err) {
                         res.statusCode = 500;
                         res.end();
@@ -551,7 +551,7 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_hours/:gym_id");
     var gym_id = req.params.gym_id;
     var hours_query = "SELECT * FROM gym_hours WHERE gym_id = \'" + gym_id + "\';";
-    con.query(hours_query, function (err, result, fields) {
+    con.query(hours_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -559,27 +559,27 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
         } else {
             if (result.rowCount > 0) {
 
-              var j_arr = [];
+                var j_arr = [];
 
-              for(var i=0; i < result.rowCount;i++){
-                var gym_id = result.rows[i].gym_id;
-                var day = result.rows[i].day;
-                var open = result.rows[i].open;
-                var close = result.rows[i].close;
+                for (var i = 0; i < result.rowCount; i++) {
+                    var gym_id = result.rows[i].gym_id;
+                    var day = result.rows[i].day;
+                    var open = result.rows[i].open;
+                    var close = result.rows[i].close;
 
-                var tmp = {
-                    "gym_id": gym_id,
-                    "day": day,
-                    "open": open,
-                    "close": close
-                };
+                    var tmp = {
+                        "gym_id": gym_id,
+                        "day": day,
+                        "open": open,
+                        "close": close
+                    };
 
-                j_arr.push(tmp);
-              }
-              res.statusCode = 200;
-              res.json(j_arr);
-              res.end();
-              console.log('[GET HOURS SUCCESS]');
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET HOURS SUCCESS]');
             } else {
                 res.statusCode = 404;
                 res.end();
@@ -593,7 +593,7 @@ app.get('/gym/get_boolean_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /gym/get_boolean_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers FROM gyms WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function (err, result, fields) {
+    con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -612,21 +612,19 @@ app.get('/gym/get_boolean_data/:user_id', (req, res) => {
                 var courses = result.rows[0].courses;
                 var showers = result.rows[0].showers;
                 res.statusCode = 200;
-                res.json(
-                    {
-                        "pool" : pool,
-                         "box_ring" : box_ring,
-                         "aerobics" : aerobics,
-                         "spa" : spa,
-                         "wifi" : wifi,
-                         "parking_area" : parking_area,
-                         "personal_trainer_service" : personal_trainer_service,
-                         "nutritionist_service" : nutritionist_service,
-                         "impedance_balance" : impedance_balance,
-                         "courses" : courses,
-                         "showers" : showers
-                    }
-                );
+                res.json({
+                    "pool": pool,
+                    "box_ring": box_ring,
+                    "aerobics": aerobics,
+                    "spa": spa,
+                    "wifi": wifi,
+                    "parking_area": parking_area,
+                    "personal_trainer_service": personal_trainer_service,
+                    "nutritionist_service": nutritionist_service,
+                    "impedance_balance": impedance_balance,
+                    "courses": courses,
+                    "showers": showers
+                });
                 res.end();
                 console.log('[GET GYM DATA OK]');
             } else {
@@ -648,7 +646,7 @@ app.post('/gym/set_hours/', (req, res, next) => {
     var close = to_add.close;
 
     var set_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + gym_id + "','" + day + "','" + open + "','" + close + "');";
-    con.query(set_query, function (err, result, fields) {
+    con.query(set_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -680,7 +678,7 @@ app.post('/gym/update_boolean_data/', (req, res, next) => {
     var showers = to_add.showers;
 
     var change_query = "UPDATE gyms SET pool = '" + pool + "', box_ring = '" + box_ring + "', aerobics = '" + aerobics + "', spa = '" + spa + "', wifi = '" + wifi + "', parking_area = '" + parking_area + "', personal_trainer_service = '" + personal_trainer_service + "', nutritionist_service = '" + nutritionist_service + "', impedance_balance = '" + impedance_balance + "', courses = '" + courses + "', showers = '" + showers + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function (err, result, fields) {
+    con.query(change_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -709,7 +707,7 @@ app.post('/register/trainer/', (req, res, next) => {
     var fiscal_code = to_add.fiscal_code;
 
     var user_query = "INSERT INTO personal_trainers (user_id, qualification, fiscal_code) VALUES ('" + user_id + "','" + qualification + "','" + fiscal_code + "');";
-    con.query(user_query, function (err, result, fields) {
+    con.query(user_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -727,7 +725,7 @@ app.get('/trainer/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /trainer/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM personal_trainers WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function (err, result, fields) {
+    con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -737,12 +735,10 @@ app.get('/trainer/get_all_data/:user_id', (req, res) => {
                 var qualification = result.rows[0].qualification;
                 var fiscal_code = result.rows[0].fiscal_code;
                 res.statusCode = 200;
-                res.json(
-                    {
-                        "qualification": qualification,
-                        "fiscal_code": fiscal_code
-                    }
-                );
+                res.json({
+                    "qualification": qualification,
+                    "fiscal_code": fiscal_code
+                });
                 res.end();
                 console.log('[GET TRAINER DATA OK]');
             } else {
@@ -762,7 +758,7 @@ app.post('/trainer/update_qualification/', (req, res, next) => {
     var qualification = to_add.qualification;
 
     var change_query = "UPDATE personal_trainers SET qualification = '" + qualification + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function (err, result, fields) {
+    con.query(change_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -771,6 +767,54 @@ app.post('/trainer/update_qualification/', (req, res, next) => {
             res.statusCode = 200;
             res.end();
             console.log('[QUALIFICA AGGIORNATA]');
+        }
+    });
+})
+
+app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
+    console.log("Rispondo richiesta: /trainer/get_training_sheets/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT training_sheet_id, customer_id, training_id, creation_date, title, description, status, duration FROM training_sheets WHERE user_id = \'" + user_id + "\';";
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var training_sheet_id = result.rows[i].training_sheet_id;
+                    var customer_id = result.rows[i].customer_id;
+                    var training_id = result.rows[i].training_id;
+                    var creation_date = result.rows[i].creation_date;
+                    var title = result.rows[i].title;
+                    var description = result.rows[i].description;
+                    var status = result.rows[i].status;
+                    var duration = result.rows[i].duration;
+
+                    var tmp = {
+                        "training_sheet_id": training_sheet_id,
+                        "customer_id": customer_id,
+                        "training_id": training_id,
+                        "creation_date": creation_date,
+                        "title": title,
+                        "description": description,
+                        "status": status,
+                        "duration": duration
+                    };
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET TRAINING SHEETS OK]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET DATA ERROR]', err);
+            }
         }
     });
 })
@@ -791,7 +835,7 @@ app.post('/register/nutritionist/', (req, res, next) => {
     var fiscal_code = to_add.fiscal_code;
 
     var user_query = "INSERT INTO nutritionists (user_id, qualification, fiscal_code) VALUES ('" + user_id + "','" + qualification + "','" + fiscal_code + "');";
-    con.query(user_query, function (err, result, fields) {
+    con.query(user_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -809,7 +853,7 @@ app.get('/nutritionist/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /nutritionist/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM nutritionists WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function (err, result, fields) {
+    con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -819,12 +863,10 @@ app.get('/nutritionist/get_all_data/:user_id', (req, res) => {
                 var qualification = result.rows[0].qualification;
                 var fiscal_code = result.rows[0].fiscal_code;
                 res.statusCode = 200;
-                res.json(
-                    {
-                        "qualification": qualification,
-                        "fiscal_code": fiscal_code
-                    }
-                );
+                res.json({
+                    "qualification": qualification,
+                    "fiscal_code": fiscal_code
+                });
                 res.end();
                 console.log('[GET NUTRITIONIST DATA OK]');
             } else {
@@ -844,7 +886,7 @@ app.post('/nutritionist/update_qualification/', (req, res, next) => {
     var qualification = to_add.qualification;
 
     var change_query = "UPDATE nutritionists SET qualification = '" + qualification + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function (err, result, fields) {
+    con.query(change_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
