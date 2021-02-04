@@ -630,7 +630,6 @@ app.get('/gym/get_boolean_data/:user_id', (req, res) => {
     });
 })
 
-
 app.post('/gym/set_hours/', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/set_hours/");
     var to_add = req.body;
@@ -651,6 +650,37 @@ app.post('/gym/set_hours/', (req, res, next) => {
             res.statusCode = 200;
             res.end();
             console.log('[Orario aggiunto]');
+        }
+    });
+})
+
+app.post('/gym/update_boolean_data/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/update_boolean_data/");
+    var to_add = req.body;
+
+    var user_id = to_add.user_id;
+    var pool = to_add.pool;
+    var box_ring = to_add.box_ring;
+    var aerobics = to_add.aerobics;
+    var spa = to_add.spa;
+    var wifi = to_add.wifi;
+    var parking_area = to_add.parking_area;
+    var personal_trainer_service = to_add.personal_trainer_service;
+    var nutritionist_service = to_add.nutritionist_service;
+    var impedance_balance = to_add.impedance_balance;
+    var courses = to_add.courses;
+    var showers = to_add.showers;
+
+    var change_query = "UPDATE gyms SET pool = '" + pool + "', box_ring = '" + box_ring + "', aerobics = '" + aerobics + "', spa = '" + spa + "', wifi = '" + wifi + "', parking_area = '" + parking_area + "', personal_trainer_service = '" + personal_trainer_service + "', nutritionist_service = '" + nutritionist_service + "', impedance_balance = '" + impedance_balance + "', courses = '" + courses + "', showers = '" + showers + "' WHERE user_id ='" + user_id + "';";
+    con.query(change_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            res.statusCode = 200;
+            res.end();
+            console.log('[BOOLEAN DATA AGGIORNATI]');
         }
     });
 })
