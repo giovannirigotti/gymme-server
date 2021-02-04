@@ -774,7 +774,7 @@ app.post('/trainer/update_qualification/', (req, res, next) => {
 app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /trainer/get_training_sheets/:user_id");
     var user_id = req.params.user_id;
-    var query = "SELECT training_sheet_id, customer_id, training_id, creation_date, title, description, status, duration FROM training_sheets WHERE user_id = \'" + user_id + "\';";
+    var query = "SELECT training_sheet_id, customer_id, trainer_id, creation_date, title, description, status, duration FROM training_sheets WHERE user_id = \'" + user_id + "\';";
     con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
