@@ -547,6 +547,62 @@ app.post('/register/gym/', (req, res, next) => {
     });
 });
 
+app.post('/gym/update_hours/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/update_hours/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+
+    var hours_array = [
+        to_add.opening_monday,
+        to_add.closing_monday,
+        to_add.opening_tuesday,
+        to_add.closing_tuesday,
+        to_add.opening_wednesday,
+        to_add.closing_wednesday,
+        to_add.opening_thursday,
+        to_add.closing_thursday,
+        to_add.opening_friday,
+        to_add.closing_friday,
+        to_add.opening_saturday,
+        to_add.closing_saturday,
+        to_add.opening_sunday,
+        to_add.closing_sunday
+    ];
+
+    console.log("id"+gym_id);
+    console.log("monday open"+hours_array[0]);
+
+
+    var delete_query = "DELETE FROM gym_hours WHERE gym_id = '"+gym_id+"';";
+    con.query(delete_query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare gli orari della palestra!]')
+        } else {
+            res_data = true;
+            console.log('[Orari palestra canellati]');
+            for (i = 0; i < 14; i = i + 2) {
+                var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + gym_id + "','" + Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
+
+                con.query(hours_query, function(err, result, fields) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log("[Errore nell'aggiornare gli orari della palestra!]" + err)
+                    } else {
+                        res.statusCode = 200;
+                        res.end();
+                        console.log('[Orario aggiornato]');
+                    }
+                });
+            }
+        }
+
+    });
+});
+
 app.get('/gym/get_hours/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_hours/:gym_id");
     var gym_id = req.params.gym_id;
