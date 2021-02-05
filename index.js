@@ -149,9 +149,10 @@ app.post('/insert_notifications/', (req, res, next) => {
     });
 });
 
-app.get('/update_all_notifications/:user_id', (req, res) => {
-    console.log("Rispondo richiesta: /update_all_notifications/:user_id");
-    var user_id = req.params.user_id;
+app.post('/update_all_notifications/', (req, res) => {
+    console.log("Rispondo richiesta: /update_all_notifications/");
+	var to_check = req.body;
+    var user_id = to_check.user_id;
     // modifico a -1 il valore di notifications_type per impostare le notifiche come lette
     var query = "UPDATE notifications SET notification_type = -1 where user_id ='" + user_id + "' AND notification_type != -1;";
     con.query(query, (err, result) => {
@@ -173,26 +174,24 @@ app.get('/update_all_notifications/:user_id', (req, res) => {
     });
 });
 
-app.get('/update_a_notification/:id', (req, res) => {
+app.get('/update_a_notification/:notification_id', (req, res) => {
     console.log("Rispondo richiesta: /update_a_notification/:notification_id");
-    var id = req.params.id;
+    var id = req.params.notification_id;
+	console.log(id);
     // modifico a -1 il valore di notifications_type per impostare le notifiche come lette
-    var query = "UPDATE notifications SET notification_type = -1 where notification_id ='" + id + "' AND notification_type != -1;";
+    var query = "UPDATE notifications SET notification_type = -1 where notification_id ='" + id + "';";
     con.query(query, (err, result) => {
         if (err) {
             res.statusCode = 500;
             console.log('[PostgreSQL ERROR]', err);
         } else {
-            var data = result.rows;
-            if (data.length == 0) {
-                res.statusCode = 404;
-                res.end();
-                console.log('[No notifications avaiable]');
-            } else {
+           
+                console.log('[Success update notification]');
+            
                 res.statusCode = 200;
-                res.json(data);
+               
                 res.end();
-            }
+            
         }
     });
 });
