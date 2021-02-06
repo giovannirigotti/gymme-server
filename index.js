@@ -55,7 +55,7 @@ app.post('/login/', (req, res, next) => {
     var user_password = req.body.password;
 
     var login_query = "SELECT * FROM users WHERE email = \'" + email + "\';";
-    con.query(login_query, function(err, result, fields) {
+    con.query(login_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -112,7 +112,7 @@ app.post('/register/user/', (req, res, next) => {
 
     //INSERISCO DATI NELLA TABELLO users
     var register_query = "INSERT INTO users (name, lastname, birthdate, email, password, user_type) VALUES ('" + name + "', '" + lastname + "', TO_DATE('" + birthdate + "', 'DD/MM/YYYY'), '" + email + "', '" + password + "', '" + user_type + "');";
-    con.query(register_query, function(err, result, fields) {
+    con.query(register_query, function (err, result, fields) {
 
         if (err) {
             res.statusCode = 500;
@@ -137,7 +137,7 @@ app.post('/insert_notifications/', (req, res, next) => {
     var user_id = to_check.user_id;
 
     var insert_notification_query = "INSERT INTO notifications (notification_type, text, user_id) VALUES ('" + notification_type + "', '" + text + "','" + user_id + "');";
-    con.query(insert_notification_query, function(err, result, fields) {
+    con.query(insert_notification_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -151,7 +151,7 @@ app.post('/insert_notifications/', (req, res, next) => {
 
 app.post('/update_all_notifications/', (req, res) => {
     console.log("Rispondo richiesta: /update_all_notifications/");
-	var to_check = req.body;
+    var to_check = req.body;
     var user_id = to_check.user_id;
     // modifico a -1 il valore di notifications_type per impostare le notifiche come lette
     var query = "UPDATE notifications SET notification_type = -1 where user_id ='" + user_id + "' AND notification_type != -1;";
@@ -177,7 +177,7 @@ app.post('/update_all_notifications/', (req, res) => {
 app.get('/update_a_notification/:notification_id', (req, res) => {
     console.log("Rispondo richiesta: /update_a_notification/:notification_id");
     var id = req.params.notification_id;
-	console.log(id);
+    console.log(id);
     // modifico a -1 il valore di notifications_type per impostare le notifiche come lette
     var query = "UPDATE notifications SET notification_type = -1 where notification_id ='" + id + "';";
     con.query(query, (err, result) => {
@@ -186,11 +186,11 @@ app.get('/update_a_notification/:notification_id', (req, res) => {
             console.log('[PostgreSQL ERROR]', err);
         } else {
 
-                console.log('[Success update notification]');
+            console.log('[Success update notification]');
 
-                res.statusCode = 200;
+            res.statusCode = 200;
 
-                res.end();
+            res.end();
 
         }
     });
@@ -226,7 +226,7 @@ app.get('/get_user_data/:email', (req, res) => {
     console.log("Rispondo richiesta: /get_user_data/:email");
     var email = req.params.email;
     var userID_query = "SELECT user_id, user_type FROM users WHERE email = \'" + email + "\';";
-    con.query(userID_query, function(err, result, fields) {
+    con.query(userID_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -259,7 +259,7 @@ app.post('/user/update_password/', (req, res, next) => {
     var new_password = to_add.new_password;
 
     var get_old_password = "SELECT password FROM users WHERE user_id = '" + user_id + "';";
-    con.query(get_old_password, function(err, result, fields) {
+    con.query(get_old_password, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -269,7 +269,7 @@ app.post('/user/update_password/', (req, res, next) => {
                 var password_to_check = result.rows[0].password;
                 if (password_to_check == old_password) {
                     var change_password = "UPDATE users SET password = '" + new_password + "' WHERE user_id ='" + user_id + "';";
-                    con.query(change_password, function(err, result, fields) {
+                    con.query(change_password, function (err, result, fields) {
                         if (err) {
                             res.statusCode = 500;
                             res.end();
@@ -303,7 +303,7 @@ app.post('/user/update_email/', (req, res, next) => {
     var email = to_add.email;
 
     var check_email = "SELECT user_id FROM users WHERE email = '" + email + "';";
-    con.query(check_email, function(err, result, fields) {
+    con.query(check_email, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -322,7 +322,7 @@ app.post('/user/update_email/', (req, res, next) => {
                 }
             } else {
                 var change_email = "UPDATE users SET email = '" + email + "' WHERE user_id ='" + user_id + "';";
-                con.query(change_email, function(err, result, fields) {
+                con.query(change_email, function (err, result, fields) {
                     if (err) {
                         res.statusCode = 500;
                         res.end();
@@ -342,7 +342,7 @@ app.get('/user/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /user/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM users WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -386,7 +386,7 @@ app.post('/register/customer/', (req, res, next) => {
     var allergies = to_add.allergies;
 
     var user_query = "INSERT INTO customers (user_id, height, diseases, allergies) VALUES ('" + user_id + "','" + height + "','" + diseases + "','" + allergies + "');";
-    con.query(user_query, function(err, result, fields) {
+    con.query(user_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -404,7 +404,7 @@ app.get('/customer/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /user/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM customers WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -439,7 +439,7 @@ app.post('/customer/update_diseases/', (req, res, next) => {
     var diseases = to_add.diseases;
 
     var change_query = "UPDATE customers SET diseases = '" + diseases + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function(err, result, fields) {
+    con.query(change_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -460,7 +460,7 @@ app.post('/customer/update_allergies/', (req, res, next) => {
     var allergies = to_add.allergies;
 
     var change_query = "UPDATE customers SET allergies = '" + allergies + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function(err, result, fields) {
+    con.query(change_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -518,7 +518,7 @@ app.post('/register/gym/', (req, res, next) => {
 
 
     var user_query = "INSERT INTO gyms (user_id, vat_number, gym_name, gym_address ,zip_code ,pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers) VALUES ('" + user_id + "','" + vat_number + "','" + gym_name + "','" + gym_address + "','" + zip_code + "','" + pool + "','" + box_ring + "','" + aerobics + "','" + spa + "','" + wifi + "','" + parking_area + "','" + personal_trainer_service + "','" + nutritionist_service + "','" + impedance_balance + "','" + courses + "','" + showers + "');";
-    con.query(user_query, function(err, result, fields) {
+    con.query(user_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -529,7 +529,7 @@ app.post('/register/gym/', (req, res, next) => {
             for (i = 0; i < 14; i = i + 2) {
                 var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + user_id + "','" + Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
 
-                con.query(hours_query, function(err, result, fields) {
+                con.query(hours_query, function (err, result, fields) {
                     if (err) {
                         res.statusCode = 500;
                         res.end();
@@ -569,12 +569,12 @@ app.post('/gym/update_hours/', (req, res, next) => {
         to_add.closing_sunday
     ];
 
-    console.log("id"+gym_id);
-    console.log("monday open"+hours_array[0]);
+    console.log("id" + gym_id);
+    console.log("monday open" + hours_array[0]);
 
 
-    var delete_query = "DELETE FROM gym_hours WHERE gym_id = '"+gym_id+"';";
-    con.query(delete_query, function(err, result, fields) {
+    var delete_query = "DELETE FROM gym_hours WHERE gym_id = '" + gym_id + "';";
+    con.query(delete_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -585,7 +585,7 @@ app.post('/gym/update_hours/', (req, res, next) => {
             for (i = 0; i < 14; i = i + 2) {
                 var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + gym_id + "','" + Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
 
-                con.query(hours_query, function(err, result, fields) {
+                con.query(hours_query, function (err, result, fields) {
                     if (err) {
                         res.statusCode = 500;
                         res.end();
@@ -606,7 +606,7 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_hours/:gym_id");
     var gym_id = req.params.gym_id;
     var hours_query = "SELECT * FROM gym_hours WHERE gym_id = \'" + gym_id + "\';";
-    con.query(hours_query, function(err, result, fields) {
+    con.query(hours_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -647,9 +647,9 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
 app.get('/gym/get_gym_trainers/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_gym_trainers/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_trainers as T JOIN personal_trainers AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '"+gym_id+"';";
+    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_trainers as T JOIN personal_trainers AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
 
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -694,9 +694,9 @@ app.get('/gym/get_gym_trainers/:gym_id', (req, res, next) => {
 app.get('/gym/get_gym_nutritionists/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_gym_nutritionists/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_nutritionists as T JOIN nutritionists AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '"+gym_id+"';";
+    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_nutritionists as T JOIN nutritionists AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
 
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -742,7 +742,7 @@ app.get('/gym/get_boolean_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /gym/get_boolean_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers FROM gyms WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -795,7 +795,7 @@ app.post('/gym/set_hours/', (req, res, next) => {
     var close = to_add.close;
 
     var set_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + gym_id + "','" + day + "','" + open + "','" + close + "');";
-    con.query(set_query, function(err, result, fields) {
+    con.query(set_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -827,7 +827,7 @@ app.post('/gym/update_boolean_data/', (req, res, next) => {
     var showers = to_add.showers;
 
     var change_query = "UPDATE gyms SET pool = '" + pool + "', box_ring = '" + box_ring + "', aerobics = '" + aerobics + "', spa = '" + spa + "', wifi = '" + wifi + "', parking_area = '" + parking_area + "', personal_trainer_service = '" + personal_trainer_service + "', nutritionist_service = '" + nutritionist_service + "', impedance_balance = '" + impedance_balance + "', courses = '" + courses + "', showers = '" + showers + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function(err, result, fields) {
+    con.query(change_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -843,9 +843,9 @@ app.post('/gym/update_boolean_data/', (req, res, next) => {
 app.get('/gym/get_new_trainers/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_new_trainers/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from personal_trainers T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code from personal_trainers as P join gym_trainers as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '"+gym_id+"';";
+    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from personal_trainers T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code from personal_trainers as P join gym_trainers as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '" + gym_id + "';";
 
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -890,9 +890,9 @@ app.get('/gym/get_new_trainers/:gym_id', (req, res, next) => {
 app.get('/gym/get_new_nutritionists/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_new_nutritionists/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from nutritionists T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code FROM nutritionists P join gym_nutritionists as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '"+gym_id+"';";
+    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from nutritionists T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code FROM nutritionists P join gym_nutritionists as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '" + gym_id + "';";
 
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -950,7 +950,7 @@ app.post('/register/trainer/', (req, res, next) => {
     var fiscal_code = to_add.fiscal_code;
 
     var user_query = "INSERT INTO personal_trainers (user_id, qualification, fiscal_code) VALUES ('" + user_id + "','" + qualification + "','" + fiscal_code + "');";
-    con.query(user_query, function(err, result, fields) {
+    con.query(user_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -968,7 +968,7 @@ app.get('/trainer/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /trainer/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM personal_trainers WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -1001,7 +1001,7 @@ app.post('/trainer/update_qualification/', (req, res, next) => {
     var qualification = to_add.qualification;
 
     var change_query = "UPDATE personal_trainers SET qualification = '" + qualification + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function(err, result, fields) {
+    con.query(change_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -1019,7 +1019,7 @@ app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
     var user_id = req.params.user_id;
     var query = "SELECT training_sheet_id, customer_id, name, TO_CHAR(creation_date, 'dd Mon YYYY') AS creation_date, title, " +
         "description, status, duration FROM training_sheets AS T JOIN users AS U ON T.trainer_id=U.user_id WHERE customer_id = \'" + user_id + "\';";
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -1064,6 +1064,81 @@ app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
 })
 
 
+app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
+    console.log("Rispondo richiesta: /trainer/get_training_sheet/:training_sheet_id");
+    var trainingSheetId = req.params.training_sheet_id;
+    var query = "SELECT training_sheet_id, customer_id, name, TO_CHAR(creation_date, 'dd Mon YYYY') AS creation_date, title, " +
+        "description, status, duration FROM training_sheets WHERE training_sheet_id = \'" + trainingSheetId + "\';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var training_sheet_id = result.rows[0].training_sheet_id;
+                var customer_id = result.rows[0].customer_id;
+                var name = result.rows[0].name;
+                var creation_date = result.rows[0].creation_date;
+                var title = result.rows[0].title;
+                var description = result.rows[0].description;
+                var status = result.rows[0].status;
+                var duration = result.rows[0].duration;
+
+                var query2 = "SELECT training_day_id, day, user_comment WHERE training_sheet_id = \'" + trainingSheetId + "\';";
+                con.query(query, function (err2, result2, fields2) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log('[PostgreSQL ERROR]', err);
+                    } else {
+
+                        var days = [];
+
+                        for (var i = 0; i < result2.rowCount; i++) {
+                            var training_day_id = result2.rows[i].training_day_id;
+                            var day = result2.rows[i].day;
+                            var user_comment = result2.rows[i].user_comment;
+
+                            var day = {
+                                "training_day_id": training_day_id,
+                                "day": day,
+                                "user_comment": user_comment
+                            }
+
+                            days.push(day);
+                        }
+
+                        var tmp = {
+                            "training_sheet_id": training_sheet_id,
+                            "customer_id": customer_id,
+                            "trainer_name": name,
+                            "creation_date": creation_date,
+                            "title": title,
+                            "description": description,
+                            "status": status,
+                            "duration": duration,
+                            "days": days
+                        }
+
+                        res.statusCode = 200;
+                        res.json(j_arr);
+                        res.end();
+                        console.log('[GET TRAINING SHEETS OK]');
+                    }
+                });
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET DATA ERROR]', err);
+            }
+        }
+    })
+
+})
+
 ///////////////////////////////////////
 ///                                 ///
 ///         NUTRITIONIST            ///
@@ -1079,7 +1154,7 @@ app.post('/register/nutritionist/', (req, res, next) => {
     var fiscal_code = to_add.fiscal_code;
 
     var user_query = "INSERT INTO nutritionists (user_id, qualification, fiscal_code) VALUES ('" + user_id + "','" + qualification + "','" + fiscal_code + "');";
-    con.query(user_query, function(err, result, fields) {
+    con.query(user_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -1097,7 +1172,7 @@ app.get('/nutritionist/get_all_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /nutritionist/get_all_data/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT * FROM nutritionists WHERE user_id = \'" + user_id + "\';";
-    con.query(query, function(err, result, fields) {
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -1130,7 +1205,7 @@ app.post('/nutritionist/update_qualification/', (req, res, next) => {
     var qualification = to_add.qualification;
 
     var change_query = "UPDATE nutritionists SET qualification = '" + qualification + "' WHERE user_id ='" + user_id + "';";
-    con.query(change_query, function(err, result, fields) {
+    con.query(change_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
