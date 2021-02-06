@@ -185,13 +185,13 @@ app.get('/update_a_notification/:notification_id', (req, res) => {
             res.statusCode = 500;
             console.log('[PostgreSQL ERROR]', err);
         } else {
-           
+
                 console.log('[Success update notification]');
-            
+
                 res.statusCode = 200;
-               
+
                 res.end();
-            
+
         }
     });
 });
@@ -639,6 +639,100 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
                 res.statusCode = 404;
                 res.end();
                 console.log('[GET ERROR]', err);
+            }
+        }
+    });
+})
+
+app.get('/gym/get_gym_trainers/:gym_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/get_gym_trainers/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_trainers as T JOIN personal_trainers AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '"+gym_id+"';";
+
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var user_id = result.rows[i].user_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var email = result.rows[i].email;
+                    var qualification = result.rows[i].qualification;
+                    var fiscal_code = result.rows[i].fiscal_code;
+
+                    var tmp = {
+                        "user_id": user_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "email": email,
+                        "qualification": qualification,
+                        "fiscal_code": fiscal_code
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_trainers SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+app.get('/gym/get_gym_nutritionists/:gym_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/get_gym_nutritionists/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_nutritionists as T JOIN nutritionists AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '"+gym_id+"';";
+
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var user_id = result.rows[i].user_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var email = result.rows[i].email;
+                    var qualification = result.rows[i].qualification;
+                    var fiscal_code = result.rows[i].fiscal_code;
+
+                    var tmp = {
+                        "user_id": user_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "email": email,
+                        "qualification": qualification,
+                        "fiscal_code": fiscal_code
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_trainers SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
             }
         }
     });
