@@ -452,6 +452,146 @@ app.post('/customer/update_diseases/', (req, res, next) => {
     });
 })
 
+app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
+    var user_id = req.params.user_id;
+    var query = "select * from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='"+user_id+"';";
+
+ 1
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+				
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var user_id = result.rows[i].user_id;
+                    var vat_number = result.rows[i].vat_number;
+                    var gym_name = result.rows[i].gym_name;
+                    var gym_address = result.rows[i].gym_address;
+                    var zip_code = result.rows[i].zip_code;
+                    var pool = result.rows[i].pool;
+					var box_ring = result.rows[i].box_ring;
+                    var aerobics = result.rows[i].aerobics;
+                    var spa = result.rows[i].spa;
+                    var wifi = result.rows[i].wifi;
+                    var parking_area = result.rows[i].parking_area;
+                    var personal_trainer_service = result.rows[i].personal_trainer_service;
+					var nutritionist_service = result.rows[i].nutritionist_service;
+                    var impedance_balance = result.rows[i].impedance_balance;
+                    var courses = result.rows[i].courses;
+                    var showers = result.rows[i].showers;
+
+                    var tmp = {
+                        "user_id": user_id,
+                        "vat_number": vat_number,
+                        "gym_name": gym_name,
+                        "gym_address": gym_address,
+                        "zip_code": zip_code,
+                        "pool": pool,
+						"box_ring": box_ring,
+                        "aerobics": aerobics,
+                        "spa": spa,
+                        "wifi": wifi,
+                        "parking_area": parking_area,
+                        "personal_trainer_service": personal_trainer_service,
+						"nutritionist_service": nutritionist_service,
+                        "impedance_balance": impedance_balance,
+                        "courses": courses,
+                        "showers": showers,
+       
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
+    var user_id = req.params.user_id;
+    var query = "select G1.user_id,  G1.vat_number, G1.gym_name, G1.gym_address, G1.zip_code, G1.pool, G1.box_ring, G1.aerobics, G1.spa, G1.wifi, G1.parking_area, G1.personal_trainer_service,  G1.nutritionist_service, G1.impedance_balance, G1.courses, G1.showers from gyms as G1 except select G.user_id,  G.vat_number, G.gym_name, G.gym_address, G.zip_code, G.pool, G.box_ring, G.aerobics, G.spa, G.wifi, G.parking_area, G.personal_trainer_service, G.nutritionist_service, G.impedance_balance, G.courses, G.showers from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id = '"+user_id+"';";
+
+ 1
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+				
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var user_id = result.rows[i].user_id;
+                    var vat_number = result.rows[i].vat_number;
+                    var gym_name = result.rows[i].gym_name;
+                    var gym_address = result.rows[i].gym_address;
+                    var zip_code = result.rows[i].zip_code;
+                    var pool = result.rows[i].pool;
+					var box_ring = result.rows[i].box_ring;
+                    var aerobics = result.rows[i].aerobics;
+                    var spa = result.rows[i].spa;
+                    var wifi = result.rows[i].wifi;
+                    var parking_area = result.rows[i].parking_area;
+                    var personal_trainer_service = result.rows[i].personal_trainer_service;
+					var nutritionist_service = result.rows[i].nutritionist_service;
+                    var impedance_balance = result.rows[i].impedance_balance;
+                    var courses = result.rows[i].courses;
+                    var showers = result.rows[i].showers;
+
+                    var tmp = {
+                        "user_id": user_id,
+                        "vat_number": vat_number,
+                        "gym_name": gym_name,
+                        "gym_address": gym_address,
+                        "zip_code": zip_code,
+                        "pool": pool,
+						"box_ring": box_ring,
+                        "aerobics": aerobics,
+                        "spa": spa,
+                        "wifi": wifi,
+                        "parking_area": parking_area,
+                        "personal_trainer_service": personal_trainer_service,
+						"nutritionist_service": nutritionist_service,
+                        "impedance_balance": impedance_balance,
+                        "courses": courses,
+                        "showers": showers,
+       
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
 app.post('/customer/update_allergies/', (req, res, next) => {
     console.log("Rispondo richiesta:/customer/update_allergies/");
     var to_add = req.body;
@@ -469,6 +609,27 @@ app.post('/customer/update_allergies/', (req, res, next) => {
             res.statusCode = 200;
             res.end();
             console.log('[ALLERGIE AGGIORNATI]');
+        }
+    });
+})
+
+app.post('/customer/inscription/', (req, res, next) => {
+    console.log("Rispondo richiesta:/customer/inscription/");
+    var to_add = req.body;
+
+    var user_id = to_add.user_id;
+    var gym_id = to_add.gym_id;
+
+    var change_query = "INSERT INTO gym_customers VALUES ( '" + user_id + "','" + gym_id + "');";
+    con.query(change_query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            res.statusCode = 200;
+            res.end();
+            console.log('[DISTURBI AGGIORNATI]');
         }
     });
 })
