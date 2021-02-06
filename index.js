@@ -840,6 +840,53 @@ app.post('/gym/update_boolean_data/', (req, res, next) => {
     });
 })
 
+app.get('/gym/get_new_trainers/:gym_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/get_new_trainers/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from personal_trainers T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code from personal_trainers as P join gym_trainers as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '"+gym_id+"';";
+
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var user_id = result.rows[i].user_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var email = result.rows[i].email;
+                    var qualification = result.rows[i].qualification;
+                    var fiscal_code = result.rows[i].fiscal_code;
+
+                    var tmp = {
+                        "user_id": user_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "email": email,
+                        "qualification": qualification,
+                        "fiscal_code": fiscal_code
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_trainers SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
 
 ///////////////////////////////////////
 ///                                 ///
