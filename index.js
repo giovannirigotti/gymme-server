@@ -467,7 +467,7 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
             if (result.rowCount > 0) {
 
                 var j_arr = [];
-				
+
 
                 for (var i = 0; i < result.rowCount; i++) {
                     var user_id = result.rows[i].user_id;
@@ -504,7 +504,7 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
                         "impedance_balance": impedance_balance,
                         "courses": courses,
                         "showers": showers,
-       
+
                     };
 
                     j_arr.push(tmp);
@@ -537,7 +537,7 @@ app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
             if (result.rowCount > 0) {
 
                 var j_arr = [];
-				
+
 
                 for (var i = 0; i < result.rowCount; i++) {
                     var user_id = result.rows[i].user_id;
@@ -574,7 +574,7 @@ app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
                         "impedance_balance": impedance_balance,
                         "courses": courses,
                         "showers": showers,
-       
+
                     };
 
                     j_arr.push(tmp);
@@ -851,6 +851,28 @@ app.get('/gym/get_gym_trainers/:gym_id', (req, res, next) => {
         }
     });
 })
+
+app.post('/gym/dismiss_trainer/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/dismiss_trainer/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+    var user_id = to_add.user_id;
+
+    var delete_query = "DELETE FROM gym_trainers WHERE gym_id = '" + gym_id + "' AND user_id = '" + user_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il collegamento!]')
+        } else {
+            console.log('[Trainer licenziato]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
 
 app.get('/gym/get_gym_nutritionists/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_gym_nutritionists/:gym_id");
