@@ -874,6 +874,28 @@ app.post('/gym/dismiss_trainer/', (req, res, next) => {
     });
 });
 
+app.post('/gym/dismiss_nutritionist/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/dismiss_nutritionist/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+    var user_id = to_add.user_id;
+
+    var delete_query = "DELETE FROM gym_nutritionists WHERE gym_id = '" + gym_id + "' AND user_id = '" + user_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il collegamento!]')
+        } else {
+            console.log('[Nutritionist licenziato]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
 app.get('/gym/get_gym_nutritionists/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_gym_nutritionists/:gym_id");
     var gym_id = req.params.gym_id;
