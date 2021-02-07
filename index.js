@@ -852,6 +852,28 @@ app.get('/gym/get_gym_trainers/:gym_id', (req, res, next) => {
     });
 })
 
+app.post('/gym/hire_trainer/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/hire_trainer/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+    var user_id = to_add.user_id;
+
+    var hire_query = "INSERT INTO gym_trainers VALUES(" + user_id + "," + gym_id + ");";
+    con.query(hire_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore inserimento!]', err)
+        } else {
+            console.log('[Trainer assunto]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
 app.post('/gym/dismiss_trainer/', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/dismiss_trainer/");
     var to_add = req.body;
@@ -867,6 +889,28 @@ app.post('/gym/dismiss_trainer/', (req, res, next) => {
             console.log('[Errore nel cancellare il collegamento!]')
         } else {
             console.log('[Trainer licenziato]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
+app.post('/gym/hire_nutritionist/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/hire_nutritionist/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+    var user_id = to_add.user_id;
+
+    var hire_query = "INSERT INTO gym_nutritionists VALUES(" + user_id + "," + gym_id + ");";
+    con.query(hire_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore inserimento!]', err)
+        } else {
+            console.log('[Nutrizionista assunto]');
             res.statusCode = 200;
             res.end();
         }
