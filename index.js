@@ -454,8 +454,8 @@ app.post('/customer/update_diseases/', (req, res, next) => {
 
 app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
-    var user_id = req.params.user_id;
-    var query = "select * from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='"+user_id+"';";
+    var user_id_util = req.params.user_id;
+    var query = "select G.* from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='"+user_id_util+"';";
 
  1
     con.query(query, function(err, result, fields) {
@@ -706,6 +706,64 @@ app.post('/register/gym/', (req, res, next) => {
 
     });
 });
+
+app.get('/gym/get_all_data/:gym_id', (req, res) => {
+    console.log("Rispondo richiesta: /gym/get_all_data/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT * FROM gyms WHERE user_id = \'" + gym_id + "\';";
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+                var user_id = result.rows[0].user_id;
+                var vat_number = result.rows[0].vat_number;
+                var gym_name = result.rows[0].gym_name;
+                var gym_address = result.rows[0].gym_address;
+                var zip_code = result.rows[0].zip_code;
+                var pool = result.rows[0].pool;
+                var box_ring = result.rows[0].box_ring;
+                var aerobics = result.rows[0].aerobics;
+                var spa = result.rows[0].spa;
+                var wifi = result.rows[0].wifi;
+                var parking_area = result.rows[0].parking_area;
+                var personal_trainer_service = result.rows[0].personal_trainer_service;
+                var nutritionist_service = result.rows[0].nutritionist_service;
+                var impedance_balance = result.rows[0].impedance_balance;
+                var courses = result.rows[0].courses;
+                var showers = result.rows[0].showers;
+    
+                res.statusCode = 200;
+                res.json({
+                    "user_id": user_id,
+                    "vat_number": vat_number,
+                    "gym_name": gym_name,
+                    "gym_address": gym_address,
+                    "zip_code": zip_code,
+                    "pool": pool,
+                    "box_ring": box_ring,
+                    "aerobics": aerobics,
+                    "spa": spa,
+                    "wifi": wifi,
+                    "parking_area": parking_area,
+                    "personal_trainer_service": personal_trainer_service,
+                    "nutritionist_service": nutritionist_service,
+                    "impedance_balance": impedance_balance,
+                    "courses": courses,
+                    "showers": showers
+                });
+                res.end();
+                console.log('[GET GYM DATA OK]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET DATA ERROR]', err);
+            }
+        }
+    });
+})
 
 app.post('/gym/update_hours/', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/update_hours/");
