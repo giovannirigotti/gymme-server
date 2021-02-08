@@ -1267,6 +1267,51 @@ app.get('/gym/get_courses/:gym_id', (req, res, next) => {
     });
 })
 
+app.get('/gym/get_customers/:gym_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/get_customers/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT U.user_id, name, lastname, birthdate , email FROM gym_customers AS G JOIN customers AS C ON G.user_id = C.user_id JOIN users AS U ON C.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+					var user_id = result.rows[i].user_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var birthdate = result.rows[i].birthdate;
+                    var email = result.rows[i].email;
+
+                    var tmp = {
+						"user_id": user_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "birthdate": birthdate,
+                        "email": email
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_customers SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
 app.get('/gym/delete_course/:course_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/delete_course/:course_id");
     var course_id = req.params.course_id;
