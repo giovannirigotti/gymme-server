@@ -1183,6 +1183,36 @@ app.get('/gym/get_new_nutritionists/:gym_id', (req, res, next) => {
     });
 })
 
+app.post('/gym/insert_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/insert_course/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+    var trainer_id = to_add.trainer_id;
+    var description = to_add.description;
+    var title = to_add.title;
+    var category = to_add.category;
+    var start_date = to_add.start_date;
+    var end_date = to_add.end_date;
+    var max_persons = to_add.max_persons;
+
+
+    var query = "INSERT INTO courses (gym_id, trainer_id, description, title, category, start_date, end_date, max_persons) VALUES ('" + gym_id + "', '" + trainer_id + "', '" + description + "','" + title + "','" + category + "',TO_DATE('" + start_date + "', 'DD/MM/YYYY'), TO_DATE('" + end_date + "', 'DD/MM/YYYY'), '" + max_persons + "');";
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel creare il corso!]', err);
+        } else {
+            
+			res.statusCode = 200;
+			res.end();
+			console.log('[Corso aggiunto]');
+                 
+        }
+
+    });
+});
 
 ///////////////////////////////////////
 ///                                 ///
