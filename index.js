@@ -629,7 +629,7 @@ app.post('/customer/inscription/', (req, res, next) => {
         } else {
             res.statusCode = 200;
             res.end();
-            console.log('[DISTURBI AGGIORNATI]');
+            console.log('[CUSTOMER INSERITO]');
         }
     });
 })
