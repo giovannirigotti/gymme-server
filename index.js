@@ -1217,7 +1217,7 @@ app.post('/gym/insert_course/', (req, res, next) => {
 app.get('/gym/get_courses/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_courses/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "SELECT name, lastname, description, title, category, start_date, end_date, max_persons FROM courses AS C JOIN users AS U ON C.trainer_id = U.user_id WHERE gym_id = '" + gym_id + "';";
+    var query = "SELECT course_id, name, lastname, description, title, category, start_date, end_date, max_persons FROM courses AS C JOIN users AS U ON C.trainer_id = U.user_id WHERE gym_id = '" + gym_id + "';";
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -1230,6 +1230,7 @@ app.get('/gym/get_courses/:gym_id', (req, res, next) => {
                 var j_arr = [];
 
                 for (var i = 0; i < result.rowCount; i++) {
+					var course_id = result.rows[i].course_id;
                     var name = result.rows[i].name;
                     var lastname = result.rows[i].lastname;
                     var description = result.rows[i].description;
@@ -1240,6 +1241,7 @@ app.get('/gym/get_courses/:gym_id', (req, res, next) => {
                     var max_persons = result.rows[i].max_persons;
 
                     var tmp = {
+						"course_id": course_id,
                         "name": name,
                         "lastname": lastname,
                         "description": description,
@@ -1264,6 +1266,25 @@ app.get('/gym/get_courses/:gym_id', (req, res, next) => {
         }
     });
 })
+
+app.get('/gym/delete_course/:course_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/delete_course/:course_id");
+    var course_id = req.params.course_id;
+
+    var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il corso!]')
+        } else {
+            console.log('[Corso licenziato]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
 ///////////////////////////////////////
 ///                                 ///
 ///            TRAINER              ///
