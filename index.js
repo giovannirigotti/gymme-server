@@ -1267,6 +1267,25 @@ app.get('/gym/get_courses/:gym_id', (req, res, next) => {
     });
 })
 
+app.get('/gym/delete_course/:course_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/delete_course/:course_id");
+    var course_id = req.params.course_id;
+
+    var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il corso!]')
+        } else {
+            console.log('[Corso licenziato]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
 app.get('/gym/get_customers/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_customers/:gym_id");
     var gym_id = req.params.gym_id;
@@ -1312,18 +1331,21 @@ app.get('/gym/get_customers/:gym_id', (req, res, next) => {
     });
 })
 
-app.get('/gym/delete_course/:course_id', (req, res, next) => {
-    console.log("Rispondo richiesta:'/gym/delete_course/:course_id");
-    var course_id = req.params.course_id;
+app.post('/gym/delete_gym_customer/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/delete_gym_customer/");
+    var to_add = req.body;
 
-    var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
+    var gym_id = to_add.gym_id;
+    var user_id = to_add.user_id;
+
+    var delete_query = "DELETE FROM gym_customers WHERE gym_id = '" + gym_id + "' AND user_id = '" + user_id + "';";
     con.query(delete_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
-            console.log('[Errore nel cancellare il corso!]')
+            console.log('[Errore nel cancellare il CUSTOMER!]')
         } else {
-            console.log('[Corso licenziato]');
+            console.log('[Customer eliminato dai propri clienti]');
             res.statusCode = 200;
             res.end();
         }
