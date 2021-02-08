@@ -1214,6 +1214,56 @@ app.post('/gym/insert_course/', (req, res, next) => {
     });
 });
 
+app.get('/gym/get_courses/:gym_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/get_courses/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT name, lastname, description, title, category, start_date, end_date, max_persons FROM courses AS C JOIN users AS U ON C.trainer_id = U.user_id WHERE gym_id = '" + gym_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var description = result.rows[i].description;
+                    var title = result.rows[i].title;
+                    var category = result.rows[i].category;
+                    var start_date = result.rows[i].start_date;
+					var end_date = result.rows[i].end_date;
+                    var max_persons = result.rows[i].max_persons;
+
+                    var tmp = {
+                        "name": name,
+                        "lastname": lastname,
+                        "description": description,
+                        "title": title,
+                        "category": category,
+						"start_date": start_date,
+                        "end_date": end_date,
+                        "max_persons": max_persons
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_courses SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
 ///////////////////////////////////////
 ///                                 ///
 ///            TRAINER              ///
