@@ -751,6 +751,49 @@ app.get('/customer/get_disponible_course_customers/:user_id', (req, res, next) =
     });
 })
 
+app.post('/customer/inscription_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/inscription_course/");
+    var to_add = req.body;
+
+    var course_id = to_add.course_id;
+    var user_id = to_add.user_id;
+
+    var hire_query = "INSERT INTO course_users VALUES(" + user_id + "," + course_id + ");";
+    con.query(hire_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore inserimento!]', err)
+        } else {
+            console.log('[Iscrizione effettuata]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
+app.post('/customer/disinscription_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/disinscription_course/");
+    var to_add = req.body;
+
+    var course_id = to_add.course_id;
+    var user_id = to_add.user_id;
+
+    var delete_query = "DELETE FROM course_users WHERE course_id = '" + course_id + "' AND user_id = '" + user_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il corso!]')
+        } else {
+            console.log('[Disiscrizione effettuata]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
 
 
 ///////////////////////////////////////
@@ -1443,25 +1486,6 @@ app.get('/gym/get_courses/:gym_id', (req, res, next) => {
         }
     });
 })
-
-app.get('/gym/delete_course/:course_id', (req, res, next) => {
-    console.log("Rispondo richiesta:'/gym/delete_course/:course_id");
-    var course_id = req.params.course_id;
-
-    var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
-    con.query(delete_query, function (err, result, fields) {
-        if (err) {
-            res.statusCode = 500;
-            res.end();
-            console.log('[Errore nel cancellare il corso!]')
-        } else {
-            console.log('[Corso eliminato]');
-            res.statusCode = 200;
-            res.end();
-        }
-
-    });
-});
 
 
 app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
