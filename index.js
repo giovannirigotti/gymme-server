@@ -1344,6 +1344,51 @@ app.get('/gym/delete_course/:course_id', (req, res, next) => {
     });
 });
 
+
+app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/send_del_course_notification/:course_id");
+    var course_id = req.params.course_id;
+    var select_query = "SELECT U.user_id, C.title FROM course_users AS U JOIN courses as C ON U.course_id = C.course id WHERE course_id = '" + course_id + "';";
+    con.query(select_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore prendere gli user del corso!]')
+        } else {
+            if (result.rowCount > 0) {
+                var title = result.rows[0].title;
+                // MANDO NOTIFICA A
+                for (var i = 0; i < result.rowCount; i++) {
+                    var user_id = result.rows[i].user_id;
+                    var insert_notification = "INSERT INTO notifications (notification_type, text, user_id ) VALUES ( '10', 'Il tuo corso: "+title+" è stato cancellato',  '" + user_id + "');";
+                    con.query(insert_notification, function (err, result, fields) {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.end();
+                            console.log('[Errore nel cancellare il corso!]')
+                        }
+                    });
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_courses SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+
+    });
+
+
+
+
+
+
+});
+
 app.get('/gym/get_customers/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_customers/:gym_id");
     var gym_id = req.params.gym_id;
