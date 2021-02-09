@@ -1336,7 +1336,7 @@ app.get('/gym/delete_course/:course_id', (req, res, next) => {
             res.end();
             console.log('[Errore nel cancellare il corso!]')
         } else {
-            console.log('[Corso licenziato]');
+            console.log('[Corso eliminato]');
             res.statusCode = 200;
             res.end();
         }
@@ -1348,12 +1348,12 @@ app.get('/gym/delete_course/:course_id', (req, res, next) => {
 app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/send_del_course_notification/:course_id");
     var course_id = req.params.course_id;
-    var select_query = "SELECT U.user_id, C.title FROM course_users AS U JOIN courses as C ON U.course_id = C.course id WHERE course_id = '" + course_id + "';";
+    var select_query = "SELECT U.user_id, C.title FROM course_users AS U JOIN courses as C ON U.course_id = C.course_id WHERE U.course_id = '" + course_id + "';";
     con.query(select_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
-            console.log('[Errore prendere gli user del corso!]')
+            console.log('[Errore prendere gli user del corso!]',err)
         } else {
             if (result.rowCount > 0) {
                 var title = result.rows[0].title;
@@ -1365,12 +1365,30 @@ app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
                         if (err) {
                             res.statusCode = 500;
                             res.end();
-                            console.log('[Errore nel cancellare il corso!]')
+                            console.log('[Errore nel cancellare il corso!]');
+                        }
+                    });
+                    console.log(user_id + " " + course_id);
+                    var delete_course_users = "DELETE FROM course_users WHERE user_id =  '" + user_id + "' AND course_id = '" + course_id + "';";
+                    con.query(delete_course_users, function (err, result, fields) {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.end();
+                            console.log('[Errore nel cancellare gli user dal corso!]');
                         }
                     });
                 }
+                var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
+                con.query(delete_query, function (err, result, fields) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log('[Errore nel cancellare il corso!]', err);
+                    }
+                    console.log('[Corso eliminato]');
+
+                });
                 res.statusCode = 200;
-                res.json(j_arr);
                 res.end();
                 console.log('[GET gym_courses SUCCESS]');
             } else {
@@ -1379,7 +1397,6 @@ app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
                 console.log('[GET ERROR : empty search]', err);
             }
         }
-
     });
 
 
