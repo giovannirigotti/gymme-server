@@ -456,8 +456,6 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
     var user_id_util = req.params.user_id;
     var query = "select G.* from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='"+user_id_util+"';";
-
- 1
     con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -526,8 +524,6 @@ app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
     var user_id = req.params.user_id;
     var query = "select G1.user_id,  G1.vat_number, G1.gym_name, G1.gym_address, G1.zip_code, G1.pool, G1.box_ring, G1.aerobics, G1.spa, G1.wifi, G1.parking_area, G1.personal_trainer_service,  G1.nutritionist_service, G1.impedance_balance, G1.courses, G1.showers from gyms as G1 except select G.user_id,  G.vat_number, G.gym_name, G.gym_address, G.zip_code, G.pool, G.box_ring, G.aerobics, G.spa, G.wifi, G.parking_area, G.personal_trainer_service, G.nutritionist_service, G.impedance_balance, G.courses, G.showers from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id = '"+user_id+"';";
-
- 1
     con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -633,6 +629,172 @@ app.post('/customer/inscription/', (req, res, next) => {
         }
     });
 })
+
+
+app.get('/customer/get_course_customers/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/get_course_customers/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT C.*, T.name, T.lastname FROM courses C join course_users CU on CU.course_id = C.course_id JOIN users T ON T.user_id = C.trainer_id  WHERE CU.user_id = '"+user_id+"';";
+
+ 
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var course_id = result.rows[i].course_id;
+                    var gym_id = result.rows[i].gym_id;
+                    var trainer_id = result.rows[i].trainer_id;
+                    var description = result.rows[i].description;
+                    var title = result.rows[i].title;
+					var category = result.rows[i].category;
+                    var start_date = result.rows[i].start_date;
+                    var end_date = result.rows[i].end_date;
+                    var max_persons = result.rows[i].max_persons;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+
+
+
+                    var tmp = {
+                        "course_id": course_id,
+                        "gym_id": gym_id,
+                        "description": description,
+                        "title": title,
+                        "category": category,
+                        "start_date": start_date,
+						"end_date": end_date,
+                        "max_persons": max_persons,
+                        "name": name,
+                        "lastname": lastname,
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+
+app.get('/customer/get_disponible_course_customers/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/get_course_customers/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT C.*, T.name, T.lastname FROM courses C  JOIN gyms G on G.user_id = C.gym_id  join gym_customers U on G.user_id = U.gym_id JOIN users T ON T.user_id = C.trainer_id  WHERE U.user_id = '"+user_id+"' except SELECT C.*, T.name, T.lastname FROM courses C join course_users CU on CU.course_id = C.course_id JOIN users T ON T.user_id = C.trainer_id WHERE CU.user_id = '"+user_id+"';";
+
+ 
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var course_id = result.rows[i].course_id;
+                    var gym_id = result.rows[i].gym_id;
+                    var trainer_id = result.rows[i].trainer_id;
+                    var description = result.rows[i].description;
+                    var title = result.rows[i].title;
+					var category = result.rows[i].category;
+                    var start_date = result.rows[i].start_date;
+                    var end_date = result.rows[i].end_date;
+                    var max_persons = result.rows[i].max_persons;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+
+
+                    var tmp = {
+                        "course_id": course_id,
+                        "gym_id": gym_id,
+                        "description": description,
+                        "title": title,
+                        "category": category,
+                        "start_date": start_date,
+						"end_date": end_date,
+                        "max_persons": max_persons,
+                        "name": name,
+                        "lastname": lastname,
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+app.post('/customer/inscription_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/inscription_course/");
+    var to_add = req.body;
+
+    var course_id = to_add.course_id;
+    var user_id = to_add.user_id;
+
+    var hire_query = "INSERT INTO course_users VALUES(" + user_id + "," + course_id + ");";
+    con.query(hire_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore inserimento!]', err)
+        } else {
+            console.log('[Iscrizione effettuata]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
+app.post('/customer/disinscription_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/disinscription_course/");
+    var to_add = req.body;
+
+    var course_id = to_add.course_id;
+    var user_id = to_add.user_id;
+
+    var delete_query = "DELETE FROM course_users WHERE course_id = '" + course_id + "' AND user_id = '" + user_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il corso!]')
+        } else {
+            console.log('[Disiscrizione effettuata]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
 
 ///////////////////////////////////////
 ///                                 ///
@@ -1324,25 +1486,6 @@ app.get('/gym/get_courses/:gym_id', (req, res, next) => {
         }
     });
 })
-
-app.get('/gym/delete_course/:course_id', (req, res, next) => {
-    console.log("Rispondo richiesta:'/gym/delete_course/:course_id");
-    var course_id = req.params.course_id;
-
-    var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
-    con.query(delete_query, function (err, result, fields) {
-        if (err) {
-            res.statusCode = 500;
-            res.end();
-            console.log('[Errore nel cancellare il corso!]')
-        } else {
-            console.log('[Corso eliminato]');
-            res.statusCode = 200;
-            res.end();
-        }
-
-    });
-});
 
 
 app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
