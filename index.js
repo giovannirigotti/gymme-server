@@ -1392,9 +1392,18 @@ app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
                 res.end();
                 console.log('[GET gym_courses SUCCESS]');
             } else {
-                res.statusCode = 404;
+                var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
+                con.query(delete_query, function (err, result, fields) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log('[Errore nel cancellare il corso!]', err);
+                    }
+                });
+                console.log('[Corso eliminato]');
+                res.statusCode = 200;
                 res.end();
-                console.log('[GET ERROR : empty search]', err);
+                console.log('[GET gym_courses SUCCESS]');
             }
         }
     });
