@@ -1828,6 +1828,51 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
 
 })
 
+app.get('/trainer/get_customers/:trainer_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/get_customers/:trainer_id");
+    var trainer_id = req.params.trainer_id;
+    var query = "SELECT U.user_id, U.name, U.lastname, U.email , U.birthdate FROM users U JOIN gym_customers C ON U.user_id = C.user_id JOIN gym_trainers T ON C.gym_id = T.gym_id WHERE T.user_id  = '" + trainer_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+					var user_id = result.rows[i].user_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var birthdate = result.rows[i].birthdate;
+                    var email = result.rows[i].email;
+
+                    var tmp = {
+						"user_id": user_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "birthdate": birthdate,
+                        "email": email
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_customers SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
 ///////////////////////////////////////
 ///                                 ///
 ///         NUTRITIONIST            ///
