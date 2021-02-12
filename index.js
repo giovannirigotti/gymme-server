@@ -1876,7 +1876,7 @@ app.get('/trainer/get_customers/:trainer_id', (req, res, next) => {
 app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/trainer/get_training_sheets_customer/:user_id");
     var user_id = req.params.user_id;
-    var query = "SELECT T.* FROM training_sheets T WHERE customer_id = '" + user_id + "';";
+    var query = "SELECT T.*, U.name, U.lastname FROM training_sheets T JOIN users U ON T.trainer_id = U.user_id WHERE customer_id = '" + user_id + "';";
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -1897,6 +1897,8 @@ app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
                     var description = result.rows[i].description;
                     var number_of_days = result.rows[i].number_of_days;
                     var strength = result.rows[i].strength;
+                    var name = result.rows[i].name; 
+                    var lastname = result.rows[i].lastname;
 
                     var tmp = {
 						"training_sheet_id": training_sheet_id,
@@ -1906,7 +1908,9 @@ app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
                         "title": title,
                         "description": description,
                         "number_of_days": number_of_days,
-                        "strength": strength
+                        "strength": strength,
+                        "name": name,
+                        "lastname": lastname,
                     };
 
                     j_arr.push(tmp);
