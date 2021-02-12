@@ -1863,7 +1863,7 @@ app.get('/trainer/get_customers/:trainer_id', (req, res, next) => {
                 res.statusCode = 200;
                 res.json(j_arr);
                 res.end();
-                console.log('[GET gym_customers SUCCESS]');
+                console.log('[GET trainer_customer SUCCESS]');
             } else {
                 res.statusCode = 404;
                 res.end();
@@ -1872,6 +1872,58 @@ app.get('/trainer/get_customers/:trainer_id', (req, res, next) => {
         }
     });
 })
+
+app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/get_training_sheets_customer/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT T.* FROM training_sheets T WHERE customer_id = '" + user_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+					var training_sheet_id = result.rows[i].training_sheet_id;
+                    var customer_id = result.rows[i].customer_id;
+                    var trainer_id = result.rows[i].trainer_id;
+                    var creation_date = result.rows[i].creation_date;
+                    var title = result.rows[i].title;
+                    var description = result.rows[i].description;
+                    var number_of_days = result.rows[i].number_of_days;
+                    var strength = result.rows[i].strength;
+
+                    var tmp = {
+						"training_sheet_id": training_sheet_id,
+                        "customer_id": customer_id,
+                        "trainer_id": trainer_id,
+                        "creation_date": creation_date,
+                        "title": title,
+                        "description": description,
+                        "number_of_days": number_of_days,
+                        "strength": strength
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET training_sheet_customer SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
 
 ///////////////////////////////////////
 ///                                 ///
