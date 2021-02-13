@@ -1953,7 +1953,10 @@ app.post('/trainer/create_training_sheet/', (req, res, next) => {
             //SUCCESS FINALE
             var training_sheet_id = result.rows[0].training_sheet_id;
             res.statusCode = 200;
-            res.json(training_sheet_id);
+            res.json(
+                {
+                    "training_sheet_id": training_sheet_id
+                });
             res.end();
             console.log('[Training sheet creato]');
         }
