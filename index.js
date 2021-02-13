@@ -40,6 +40,7 @@ app.listen(port, () => {
 ///                                 ///
 ///////////////////////////////////////
 
+
 app.get('/', (req, res) => {
     console.log("Rispondo richiesta: /");
     res.json("Hello from node server!");
@@ -370,6 +371,8 @@ app.get('/user/get_all_data/:user_id', (req, res) => {
         }
     });
 })
+
+
 ///////////////////////////////////////
 ///                                 ///
 ///           CUSTOMERS             ///
@@ -1928,6 +1931,32 @@ app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
     });
 })
 
+app.post('/trainer/create_training_sheet/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/create_training_sheet/");
+    var to_add = req.body;
+
+    var customer_id = to_add.customer_id;
+    var trainer_id = to_add.trainer_id;
+    var creation_date = to_add.creation_date;
+    var title = to_add.title;
+    var description = to_add.description;
+    var number_of_days = to_add.number_of_days;
+    var strength = 50;
+
+    var user_query = "INSERT INTO training_sheets (customer_id, trainer_id, creation_date, title, description, number_of_days, strength) VALUES ('" + customer_id + "','" + trainer_id + "',TO_DATE('" + creation_date + "', 'DD/MM/YYYY'),'" + title + "','" + description + "','" + number_of_days + "','" + strength + "');";
+    con.query(user_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            //SUCCESS FINALE
+            res.statusCode = 200;
+            res.end();
+            console.log('[Training sheet creato]');
+        }
+    });
+})
 
 ///////////////////////////////////////
 ///                                 ///
