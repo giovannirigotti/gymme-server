@@ -1943,7 +1943,7 @@ app.post('/trainer/create_training_sheet/', (req, res, next) => {
     var number_of_days = to_add.number_of_days;
     var strength = 50;
 
-    var user_query = "INSERT INTO training_sheets (customer_id, trainer_id, creation_date, title, description, number_of_days, strength) VALUES ('" + customer_id + "','" + trainer_id + "',TO_DATE('" + creation_date + "', 'DD/MM/YYYY'),'" + title + "','" + description + "','" + number_of_days + "','" + strength + "');";
+    var user_query = "INSERT INTO training_sheets (customer_id, trainer_id, creation_date, title, description, number_of_days, strength) VALUES ('" + customer_id + "','" + trainer_id + "',TO_DATE('" + creation_date + "', 'DD/MM/YYYY'),'" + title + "','" + description + "','" + number_of_days + "','" + strength + "') RETURNING training_sheet_id;";
     con.query(user_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -1951,7 +1951,9 @@ app.post('/trainer/create_training_sheet/', (req, res, next) => {
             console.log('[PostgreSQL ERROR]', err);
         } else {
             //SUCCESS FINALE
+            var training_sheet_id = result.rows[0].training_sheet_id;
             res.statusCode = 200;
+            res.json(training_sheet_id);
             res.end();
             console.log('[Training sheet creato]');
         }
