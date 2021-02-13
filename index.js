@@ -1913,7 +1913,7 @@ app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
                         "number_of_days": number_of_days,
                         "strength": strength,
                         "name": name,
-                        "lastname": lastname,
+                        "lastname": lastname
                     };
 
                     j_arr.push(tmp);
@@ -1963,6 +1963,45 @@ app.post('/trainer/create_training_sheet/', (req, res, next) => {
     });
 })
 
+app.get('/trainer/get_exercises/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/get_exercises/");
+    var user_id = req.params.user_id;
+    var query = "SELECT * FROM exercises ";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var exercise_id = result.rows[i].exercise_id;
+                    var name = result.rows[i].name;
+
+
+                    var tmp = {
+                        "exercise_id": exercise_id,
+                        "name": name
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET exercises SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
 ///////////////////////////////////////
 ///                                 ///
 ///         NUTRITIONIST            ///
