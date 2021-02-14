@@ -455,10 +455,10 @@ app.post('/customer/update_diseases/', (req, res, next) => {
 app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
     var user_id = req.params.user_id;
-    var query = "select * from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='"+user_id+"';";
+    var query = "select * from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='" + user_id + "';";
 
- 1
-    con.query(query, function(err, result, fields) {
+    1
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -476,13 +476,13 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
                     var gym_address = result.rows[i].gym_address;
                     var zip_code = result.rows[i].zip_code;
                     var pool = result.rows[i].pool;
-					var box_ring = result.rows[i].box_ring;
+                    var box_ring = result.rows[i].box_ring;
                     var aerobics = result.rows[i].aerobics;
                     var spa = result.rows[i].spa;
                     var wifi = result.rows[i].wifi;
                     var parking_area = result.rows[i].parking_area;
                     var personal_trainer_service = result.rows[i].personal_trainer_service;
-					var nutritionist_service = result.rows[i].nutritionist_service;
+                    var nutritionist_service = result.rows[i].nutritionist_service;
                     var impedance_balance = result.rows[i].impedance_balance;
                     var courses = result.rows[i].courses;
                     var showers = result.rows[i].showers;
@@ -494,13 +494,13 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
                         "gym_address": gym_address,
                         "zip_code": zip_code,
                         "pool": pool,
-						"box_ring": box_ring,
+                        "box_ring": box_ring,
                         "aerobics": aerobics,
                         "spa": spa,
                         "wifi": wifi,
                         "parking_area": parking_area,
                         "personal_trainer_service": personal_trainer_service,
-						"nutritionist_service": nutritionist_service,
+                        "nutritionist_service": nutritionist_service,
                         "impedance_balance": impedance_balance,
                         "courses": courses,
                         "showers": showers,
@@ -525,10 +525,10 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
 app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
     var user_id = req.params.user_id;
-    var query = "select G1.user_id,  G1.vat_number, G1.gym_name, G1.gym_address, G1.zip_code, G1.pool, G1.box_ring, G1.aerobics, G1.spa, G1.wifi, G1.parking_area, G1.personal_trainer_service,  G1.nutritionist_service, G1.impedance_balance, G1.courses, G1.showers from gyms as G1 except select G.user_id,  G.vat_number, G.gym_name, G.gym_address, G.zip_code, G.pool, G.box_ring, G.aerobics, G.spa, G.wifi, G.parking_area, G.personal_trainer_service, G.nutritionist_service, G.impedance_balance, G.courses, G.showers from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id = '"+user_id+"';";
+    var query = "select G1.user_id,  G1.vat_number, G1.gym_name, G1.gym_address, G1.zip_code, G1.pool, G1.box_ring, G1.aerobics, G1.spa, G1.wifi, G1.parking_area, G1.personal_trainer_service,  G1.nutritionist_service, G1.impedance_balance, G1.courses, G1.showers from gyms as G1 except select G.user_id,  G.vat_number, G.gym_name, G.gym_address, G.zip_code, G.pool, G.box_ring, G.aerobics, G.spa, G.wifi, G.parking_area, G.personal_trainer_service, G.nutritionist_service, G.impedance_balance, G.courses, G.showers from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id = '" + user_id + "';";
 
- 1
-    con.query(query, function(err, result, fields) {
+    1
+    con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -546,13 +546,13 @@ app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
                     var gym_address = result.rows[i].gym_address;
                     var zip_code = result.rows[i].zip_code;
                     var pool = result.rows[i].pool;
-					var box_ring = result.rows[i].box_ring;
+                    var box_ring = result.rows[i].box_ring;
                     var aerobics = result.rows[i].aerobics;
                     var spa = result.rows[i].spa;
                     var wifi = result.rows[i].wifi;
                     var parking_area = result.rows[i].parking_area;
                     var personal_trainer_service = result.rows[i].personal_trainer_service;
-					var nutritionist_service = result.rows[i].nutritionist_service;
+                    var nutritionist_service = result.rows[i].nutritionist_service;
                     var impedance_balance = result.rows[i].impedance_balance;
                     var courses = result.rows[i].courses;
                     var showers = result.rows[i].showers;
@@ -564,13 +564,13 @@ app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
                         "gym_address": gym_address,
                         "zip_code": zip_code,
                         "pool": pool,
-						"box_ring": box_ring,
+                        "box_ring": box_ring,
                         "aerobics": aerobics,
                         "spa": spa,
                         "wifi": wifi,
                         "parking_area": parking_area,
                         "personal_trainer_service": personal_trainer_service,
-						"nutritionist_service": nutritionist_service,
+                        "nutritionist_service": nutritionist_service,
                         "impedance_balance": impedance_balance,
                         "courses": courses,
                         "showers": showers,
@@ -621,7 +621,7 @@ app.post('/customer/inscription/', (req, res, next) => {
     var gym_id = to_add.gym_id;
 
     var change_query = "INSERT INTO gym_customers VALUES ( '" + user_id + "','" + gym_id + "');";
-    con.query(change_query, function(err, result, fields) {
+    con.query(change_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -678,7 +678,9 @@ app.post('/register/gym/', (req, res, next) => {
     ];
 
 
-    var user_query = "INSERT INTO gyms (user_id, vat_number, gym_name, gym_address ,zip_code ,pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers) VALUES ('" + user_id + "','" + vat_number + "','" + gym_name + "','" + gym_address + "','" + zip_code + "','" + pool + "','" + box_ring + "','" + aerobics + "','" + spa + "','" + wifi + "','" + parking_area + "','" + personal_trainer_service + "','" + nutritionist_service + "','" + impedance_balance + "','" + courses + "','" + showers + "');";
+    var user_query = "INSERT INTO gyms (user_id, vat_number, gym_name, gym_address ,zip_code ,pool, box_ring, aerobics, " +
+        "spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers) VALUES" +
+        " ('" + user_id + "','" + vat_number + "','" + gym_name + "','" + gym_address + "','" + zip_code + "','" + pool + "','" + box_ring + "','" + aerobics + "','" + spa + "','" + wifi + "','" + parking_area + "','" + personal_trainer_service + "','" + nutritionist_service + "','" + impedance_balance + "','" + courses + "','" + showers + "');";
     con.query(user_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -688,7 +690,8 @@ app.post('/register/gym/', (req, res, next) => {
             res_data = true;
             console.log('[Dati palestra aggiunti]');
             for (i = 0; i < 14; i = i + 2) {
-                var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + user_id + "','" + Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
+                var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + user_id + "','" +
+                    Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
 
                 con.query(hours_query, function (err, result, fields) {
                     if (err) {
@@ -744,7 +747,8 @@ app.post('/gym/update_hours/', (req, res, next) => {
             res_data = true;
             console.log('[Orari palestra canellati]');
             for (i = 0; i < 14; i = i + 2) {
-                var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + gym_id + "','" + Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
+                var hours_query = "INSERT INTO gym_hours (gym_id, day, open, close) VALUES ('" + gym_id + "','" +
+                    Number(i / 2 + 1) + "','" + hours_array[i] + "','" + hours_array[i + 1] + "');";
 
                 con.query(hours_query, function (err, result, fields) {
                     if (err) {
@@ -808,7 +812,8 @@ app.get('/gym/get_hours/:gym_id', (req, res, next) => {
 app.get('/gym/get_gym_trainers/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_gym_trainers/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_trainers as T JOIN personal_trainers AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
+    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_trainers as T JOIN " +
+        "personal_trainers AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -943,7 +948,8 @@ app.post('/gym/dismiss_nutritionist/', (req, res, next) => {
 app.get('/gym/get_gym_nutritionists/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_gym_nutritionists/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_nutritionists as T JOIN nutritionists AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
+    var query = "SELECT T.user_id, name, lastname, email, qualification, fiscal_code FROM gym_nutritionists as T JOIN nutritionists " +
+        "AS G on T.user_id = G.user_id JOIN users AS U ON G.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -990,7 +996,8 @@ app.get('/gym/get_gym_nutritionists/:gym_id', (req, res, next) => {
 app.get('/gym/get_boolean_data/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /gym/get_boolean_data/:user_id");
     var user_id = req.params.user_id;
-    var query = "SELECT pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, impedance_balance, courses, showers FROM gyms WHERE user_id = \'" + user_id + "\';";
+    var query = "SELECT pool, box_ring, aerobics, spa, wifi, parking_area, personal_trainer_service, nutritionist_service, " +
+        "impedance_balance, courses, showers FROM gyms WHERE user_id = \'" + user_id + "\';";
     con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -1075,7 +1082,10 @@ app.post('/gym/update_boolean_data/', (req, res, next) => {
     var courses = to_add.courses;
     var showers = to_add.showers;
 
-    var change_query = "UPDATE gyms SET pool = '" + pool + "', box_ring = '" + box_ring + "', aerobics = '" + aerobics + "', spa = '" + spa + "', wifi = '" + wifi + "', parking_area = '" + parking_area + "', personal_trainer_service = '" + personal_trainer_service + "', nutritionist_service = '" + nutritionist_service + "', impedance_balance = '" + impedance_balance + "', courses = '" + courses + "', showers = '" + showers + "' WHERE user_id ='" + user_id + "';";
+    var change_query = "UPDATE gyms SET pool = '" + pool + "', box_ring = '" + box_ring + "', aerobics = '" + aerobics + "', spa = '" + spa + "', " +
+        "wifi = '" + wifi + "', parking_area = '" + parking_area + "', personal_trainer_service = '" + personal_trainer_service + "'," +
+        " nutritionist_service = '" + nutritionist_service + "', impedance_balance = '" + impedance_balance + "', courses = '" + courses + "', " +
+        "showers = '" + showers + "' WHERE user_id ='" + user_id + "';";
     con.query(change_query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -1092,7 +1102,9 @@ app.post('/gym/update_boolean_data/', (req, res, next) => {
 app.get('/gym/get_new_trainers/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_new_trainers/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from personal_trainers T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code from personal_trainers as P join gym_trainers as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '" + gym_id + "';";
+    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from personal_trainers T join users U on U.user_id = T.user_id " +
+        "EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code from personal_trainers as P join gym_trainers as G on" +
+        " P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '" + gym_id + "';";
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -1139,7 +1151,8 @@ app.get('/gym/get_new_trainers/:gym_id', (req, res, next) => {
 app.get('/gym/get_new_nutritionists/:gym_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/get_new_nutritionists/:gym_id");
     var gym_id = req.params.gym_id;
-    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from nutritionists T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, qualification, fiscal_code FROM nutritionists P join gym_nutritionists as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '" + gym_id + "';";
+    var query = "select T.user_id, U.name, lastname, email, qualification, fiscal_code from nutritionists T join users U on U.user_id = T.user_id EXCEPT select P.user_id, name, lastname, email, " +
+        "qualification, fiscal_code FROM nutritionists P join gym_nutritionists as G on P.user_id = G.user_id JOIN users Y ON Y.user_id = P.user_id where gym_id = '" + gym_id + "';";
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -1183,6 +1196,28 @@ app.get('/gym/get_new_nutritionists/:gym_id', (req, res, next) => {
     });
 })
 
+app.post('/customer/insert_completed_training_day/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/insert_completed_training_day/");
+    var to_add = req.body;
+
+    var training_sheet_id = to_add.training_sheet_id;
+    var seq = to_add.seq;
+    var completion_date = to_add.completion_date;
+    var user_comment = to_add.user_comment;
+
+    var insert_query = "INSERT INTO completed_training_days (training_sheet_id, seq, completion_date, user_comment) VALUES ('" + training_sheet_id + "','" + seq + "', TO_DATE('" + completion_date + "' , 'DD-MM-YYYY'),'" + user_comment + "');";
+    con.query(insert_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            res.statusCode = 200;
+            res.end();
+            console.log('[INSERITO NUOVO COMPLETED TRAINING DAY]');
+        }
+    });
+})
 
 ///////////////////////////////////////
 ///                                 ///
@@ -1267,7 +1302,7 @@ app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
     console.log("Rispondo richiesta: /trainer/get_training_sheets/:user_id");
     var user_id = req.params.user_id;
     var query = "SELECT training_sheet_id, customer_id, name, TO_CHAR(creation_date, 'dd Mon YYYY') AS creation_date, title, " +
-        "description, status, duration FROM training_sheets AS T JOIN users AS U ON T.trainer_id=U.user_id WHERE customer_id = \'" + user_id + "\';";
+        "description, strength, number_of_days FROM training_sheets AS T JOIN users AS U ON T.trainer_id=U.user_id WHERE customer_id = \'" + user_id + "\';";
     con.query(query, function (err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -1280,22 +1315,24 @@ app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
                 for (var i = 0; i < result.rowCount; i++) {
                     var training_sheet_id = result.rows[i].training_sheet_id;
                     var customer_id = result.rows[i].customer_id;
-                    var name = result.rows[i].name;
+                    var trainer_id = result.rows[i].trainer_id;
+                    var trainer_name = result.rows[i].name;
                     var creation_date = result.rows[i].creation_date;
                     var title = result.rows[i].title;
+                    var strength = result.rows[i].strength;
                     var description = result.rows[i].description;
-                    var status = result.rows[i].status;
-                    var duration = result.rows[i].duration;
+                    var number_of_days = result.rows[i].number_of_days;
 
                     var tmp = {
                         "training_sheet_id": training_sheet_id,
                         "customer_id": customer_id,
-                        "trainer_name": name,
+                        "trainer_id":trainer_id,
+                        "trainer_name": trainer_name,
                         "creation_date": creation_date,
                         "title": title,
+                        "strength": strength,
                         "description": description,
-                        "status": status,
-                        "duration": duration
+                        "number_of_days": number_of_days
                     };
                     j_arr.push(tmp);
                 }
@@ -1316,8 +1353,8 @@ app.get('/trainer/get_training_sheets/:user_id', (req, res) => {
 app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
     console.log("Rispondo richiesta: /trainer/get_training_sheet/:training_sheet_id");
     var trainingSheetId = req.params.training_sheet_id;
-    var query = "SELECT training_sheet_id, customer_id, name, TO_CHAR(creation_date, 'dd Mon YYYY') AS creation_date, title, " +
-        "description, status, duration FROM training_sheets WHERE training_sheet_id = \'" + trainingSheetId + "\';";
+    var query = "SELECT training_sheet_id, customer_id, title, strength, TO_CHAR(creation_date, 'dd Mon YYYY') AS creation_date, title, " +
+        "description, number_of_days FROM training_sheets WHERE training_sheet_id = \'" + trainingSheetId + "\';";
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -1329,64 +1366,145 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
 
                 var training_sheet_id = result.rows[0].training_sheet_id;
                 var customer_id = result.rows[0].customer_id;
-                var name = result.rows[0].name;
                 var creation_date = result.rows[0].creation_date;
                 var title = result.rows[0].title;
+                var strength = result.rows[0].strength;
                 var description = result.rows[0].description;
-                var status = result.rows[0].status;
-                var duration = result.rows[0].duration;
+                var number_of_days = result.rows[0].number_of_days;
 
-                var query2 = "SELECT training_day_id, day, user_comment WHERE training_sheet_id = \'" + trainingSheetId + "\';";
-                con.query(query, function (err2, result2, fields2) {
-                    if (err) {
+                var query2 = "SELECT training_sheet_id, seq FROM training_days WHERE training_sheet_id = \'" + trainingSheetId + "\';";
+                con.query(query2, function (err2, result2, fields2) {
+                    if (err2) {
                         res.statusCode = 500;
                         res.end();
-                        console.log('[PostgreSQL ERROR]', err);
+                        console.log('[PostgreSQL ERROR]', err2);
                     } else {
 
-                        var days = [];
+                        var trainingDays = [];
 
                         for (var i = 0; i < result2.rowCount; i++) {
                             var training_day_id = result2.rows[i].training_day_id;
-                            var day = result2.rows[i].day;
-                            var user_comment = result2.rows[i].user_comment;
+                            var seq = result2.rows[i].seq;
 
-                            var day = {
-                                "training_day_id": training_day_id,
-                                "day": day,
-                                "user_comment": user_comment
+
+                            var trainingDay = {
+                                "training_sheet_id": training_sheet_id,
+                                "seq": seq
                             }
-
-                            days.push(day);
+                            trainingDays.push(trainingDay);
                         }
 
-                        var tmp = {
-                            "training_sheet_id": training_sheet_id,
-                            "customer_id": customer_id,
-                            "trainer_name": name,
-                            "creation_date": creation_date,
-                            "title": title,
-                            "description": description,
-                            "status": status,
-                            "duration": duration,
-                            "days": days
-                        }
 
-                        res.statusCode = 200;
-                        res.json(j_arr);
-                        res.end();
-                        console.log('[GET TRAINING SHEETS OK]');
+                        console.log(trainingDays);
+
+                        var query3 = "SELECT seq, TO_CHAR(completion_date, 'dd-MM-YYYY') AS completion_date, user_comment FROM completed_training_days WHERE training_sheet_id = \'" + trainingSheetId + "\';";
+                        con.query(query3, function (err3, result3, fields3) {
+                            if (err3) {
+                                res.statusCode = 500;
+                                res.end();
+                                console.log('[PostgreSQL ERROR]', err3);
+                            } else {
+
+                                var completedDays = [];
+
+                                for (var i = 0; i < result3.rowCount; i++) {
+                                    var seq = result3.rows[i].seq;
+                                    var completion_date = result3.rows[i].completion_date;
+                                    var user_comment = result3.rows[i].user_comment;
+
+                                    var completedDay = {
+                                        "seq": seq,
+                                        "completion_date": completion_date,
+                                        "user_comment": user_comment
+                                    }
+                                    completedDays.push(completedDay);
+                                }
+
+                                console.log(completedDays);
+
+
+                                var query4 = "SELECT day_exercise_id, training_sheet_id, seq, D.exercise_id, user_comment," +
+                                    " name, repetitions, description FROM day_exercises AS D JOIN exercises AS E ON D.exercise_id=E.exercise_id WHERE training_sheet_id = \'" + training_sheet_id+ "\';";
+                                con.query(query4, function (err4, result4, fields4) {
+                                    if (err4) {
+                                        res.statusCode = 500;
+                                        res.end();
+                                        console.log('[PostgreSQL ERROR]', err4);
+                                    } else {
+
+                                        var exercises = [];
+
+                                        for (var i = 0; i < result4.rowCount; i++) {
+                                            var day_exercise_id= result4.rows[i].day_exercise_id;
+                                            var training_sheet_id = result4.rows[i].training_sheet_id;
+                                            var seq = result4.rows[i].seq;
+                                            var exercise_id = result4.rows[i].exercise_id;
+                                            var user_comment = result4.rows[i].user_comment;
+                                            var name = result4.rows[i].name;
+                                            var description = result4.rows[i].description;
+                                            var repetitions = result4.rows[i].repetitions;
+
+
+
+                                            var exercise = {
+                                                "day_exercise_id":day_exercise_id,
+                                                "training_sheet_id":training_sheet_id,
+                                                "seq": seq,
+                                                "exercise_id":exercise_id,
+                                                "completion_date": completion_date,
+                                                "user_comment": user_comment,
+                                                "name": name,
+                                                "description":description,
+                                                "repetitions":repetitions
+                                            }
+                                            exercises.push(exercise);
+                                        }
+
+
+
+
+
+                                        var tmp = {
+                                            "training_sheet_id": training_sheet_id,
+                                            "customer_id": customer_id,
+                                            "trainer_name": name,
+                                            "creation_date": creation_date,
+                                            "title": title,
+                                            "description": description,
+                                            "number_of_days": number_of_days,
+                                            "strength":strength,
+                                            "training_days": trainingDays,
+                                            "completed_days": completedDays,
+                                            "exercises":exercises
+                                        }
+
+
+                                        res.statusCode = 200;
+                                        res.json(tmp);
+                                        res.end();
+                                        console.log('[GET TRAINING SHEETS OK]');
+
+                                    }
+                                });
+
+                                }
+
+                        });
+
+
                     }
                 });
+
             } else {
                 res.statusCode = 404;
                 res.end();
                 console.log('[GET DATA ERROR]', err);
             }
         }
-    })
 
-})
+
+    });
+});
 
 ///////////////////////////////////////
 ///                                 ///
