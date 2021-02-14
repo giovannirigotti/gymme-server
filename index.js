@@ -454,11 +454,9 @@ app.post('/customer/update_diseases/', (req, res, next) => {
 
 app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
-    var user_id = req.params.user_id;
-    var query = "select * from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='" + user_id + "';";
-
-    1
-    con.query(query, function (err, result, fields) {
+    var user_id_util = req.params.user_id;
+    var query = "select G.* from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id ='"+user_id_util+"';";
+    con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -476,13 +474,13 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
                     var gym_address = result.rows[i].gym_address;
                     var zip_code = result.rows[i].zip_code;
                     var pool = result.rows[i].pool;
-                    var box_ring = result.rows[i].box_ring;
+					var box_ring = result.rows[i].box_ring;
                     var aerobics = result.rows[i].aerobics;
                     var spa = result.rows[i].spa;
                     var wifi = result.rows[i].wifi;
                     var parking_area = result.rows[i].parking_area;
                     var personal_trainer_service = result.rows[i].personal_trainer_service;
-                    var nutritionist_service = result.rows[i].nutritionist_service;
+					var nutritionist_service = result.rows[i].nutritionist_service;
                     var impedance_balance = result.rows[i].impedance_balance;
                     var courses = result.rows[i].courses;
                     var showers = result.rows[i].showers;
@@ -494,13 +492,13 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
                         "gym_address": gym_address,
                         "zip_code": zip_code,
                         "pool": pool,
-                        "box_ring": box_ring,
+						"box_ring": box_ring,
                         "aerobics": aerobics,
                         "spa": spa,
                         "wifi": wifi,
                         "parking_area": parking_area,
                         "personal_trainer_service": personal_trainer_service,
-                        "nutritionist_service": nutritionist_service,
+						"nutritionist_service": nutritionist_service,
                         "impedance_balance": impedance_balance,
                         "courses": courses,
                         "showers": showers,
@@ -525,10 +523,8 @@ app.get('/customer/get_gym_customers/:user_id', (req, res, next) => {
 app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/get_gym_customers/:user_id");
     var user_id = req.params.user_id;
-    var query = "select G1.user_id,  G1.vat_number, G1.gym_name, G1.gym_address, G1.zip_code, G1.pool, G1.box_ring, G1.aerobics, G1.spa, G1.wifi, G1.parking_area, G1.personal_trainer_service,  G1.nutritionist_service, G1.impedance_balance, G1.courses, G1.showers from gyms as G1 except select G.user_id,  G.vat_number, G.gym_name, G.gym_address, G.zip_code, G.pool, G.box_ring, G.aerobics, G.spa, G.wifi, G.parking_area, G.personal_trainer_service, G.nutritionist_service, G.impedance_balance, G.courses, G.showers from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id = '" + user_id + "';";
-
-    1
-    con.query(query, function (err, result, fields) {
+    var query = "select G1.user_id,  G1.vat_number, G1.gym_name, G1.gym_address, G1.zip_code, G1.pool, G1.box_ring, G1.aerobics, G1.spa, G1.wifi, G1.parking_area, G1.personal_trainer_service,  G1.nutritionist_service, G1.impedance_balance, G1.courses, G1.showers from gyms as G1 except select G.user_id,  G.vat_number, G.gym_name, G.gym_address, G.zip_code, G.pool, G.box_ring, G.aerobics, G.spa, G.wifi, G.parking_area, G.personal_trainer_service, G.nutritionist_service, G.impedance_balance, G.courses, G.showers from gyms as G join gym_customers as GC on G.user_id = GC.gym_id where GC.user_id = '"+user_id+"';";
+    con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -546,13 +542,13 @@ app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
                     var gym_address = result.rows[i].gym_address;
                     var zip_code = result.rows[i].zip_code;
                     var pool = result.rows[i].pool;
-                    var box_ring = result.rows[i].box_ring;
+					var box_ring = result.rows[i].box_ring;
                     var aerobics = result.rows[i].aerobics;
                     var spa = result.rows[i].spa;
                     var wifi = result.rows[i].wifi;
                     var parking_area = result.rows[i].parking_area;
                     var personal_trainer_service = result.rows[i].personal_trainer_service;
-                    var nutritionist_service = result.rows[i].nutritionist_service;
+					var nutritionist_service = result.rows[i].nutritionist_service;
                     var impedance_balance = result.rows[i].impedance_balance;
                     var courses = result.rows[i].courses;
                     var showers = result.rows[i].showers;
@@ -564,13 +560,13 @@ app.get('/customer/get_disponible_gym_customers/:user_id', (req, res, next) => {
                         "gym_address": gym_address,
                         "zip_code": zip_code,
                         "pool": pool,
-                        "box_ring": box_ring,
+						"box_ring": box_ring,
                         "aerobics": aerobics,
                         "spa": spa,
                         "wifi": wifi,
                         "parking_area": parking_area,
                         "personal_trainer_service": personal_trainer_service,
-                        "nutritionist_service": nutritionist_service,
+						"nutritionist_service": nutritionist_service,
                         "impedance_balance": impedance_balance,
                         "courses": courses,
                         "showers": showers,
@@ -621,7 +617,7 @@ app.post('/customer/inscription/', (req, res, next) => {
     var gym_id = to_add.gym_id;
 
     var change_query = "INSERT INTO gym_customers VALUES ( '" + user_id + "','" + gym_id + "');";
-    con.query(change_query, function (err, result, fields) {
+    con.query(change_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
@@ -629,10 +625,176 @@ app.post('/customer/inscription/', (req, res, next) => {
         } else {
             res.statusCode = 200;
             res.end();
-            console.log('[DISTURBI AGGIORNATI]');
+            console.log('[CUSTOMER INSERITO]');
         }
     });
 })
+
+
+app.get('/customer/get_course_customers/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/get_course_customers/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT C.*, T.name, T.lastname FROM courses C join course_users CU on CU.course_id = C.course_id JOIN users T ON T.user_id = C.trainer_id  WHERE CU.user_id = '"+user_id+"';";
+
+
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var course_id = result.rows[i].course_id;
+                    var gym_id = result.rows[i].gym_id;
+                    var trainer_id = result.rows[i].trainer_id;
+                    var description = result.rows[i].description;
+                    var title = result.rows[i].title;
+					var category = result.rows[i].category;
+                    var start_date = result.rows[i].start_date;
+                    var end_date = result.rows[i].end_date;
+                    var max_persons = result.rows[i].max_persons;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+
+
+
+                    var tmp = {
+                        "course_id": course_id,
+                        "gym_id": gym_id,
+                        "description": description,
+                        "title": title,
+                        "category": category,
+                        "start_date": start_date,
+						"end_date": end_date,
+                        "max_persons": max_persons,
+                        "name": name,
+                        "lastname": lastname,
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+
+app.get('/customer/get_disponible_course_customers/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/get_course_customers/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT C.*, T.name, T.lastname FROM courses C  JOIN gyms G on G.user_id = C.gym_id  join gym_customers U on G.user_id = U.gym_id JOIN users T ON T.user_id = C.trainer_id  WHERE U.user_id = '"+user_id+"' except SELECT C.*, T.name, T.lastname FROM courses C join course_users CU on CU.course_id = C.course_id JOIN users T ON T.user_id = C.trainer_id WHERE CU.user_id = '"+user_id+"';";
+
+
+    con.query(query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var course_id = result.rows[i].course_id;
+                    var gym_id = result.rows[i].gym_id;
+                    var trainer_id = result.rows[i].trainer_id;
+                    var description = result.rows[i].description;
+                    var title = result.rows[i].title;
+					var category = result.rows[i].category;
+                    var start_date = result.rows[i].start_date;
+                    var end_date = result.rows[i].end_date;
+                    var max_persons = result.rows[i].max_persons;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+
+
+                    var tmp = {
+                        "course_id": course_id,
+                        "gym_id": gym_id,
+                        "description": description,
+                        "title": title,
+                        "category": category,
+                        "start_date": start_date,
+						"end_date": end_date,
+                        "max_persons": max_persons,
+                        "name": name,
+                        "lastname": lastname,
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+app.post('/customer/inscription_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/inscription_course/");
+    var to_add = req.body;
+
+    var course_id = to_add.course_id;
+    var user_id = to_add.user_id;
+
+    var hire_query = "INSERT INTO course_users VALUES(" + user_id + "," + course_id + ");";
+    con.query(hire_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore inserimento!]', err)
+        } else {
+            console.log('[Iscrizione effettuata]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
+app.post('/customer/disinscription_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/customer/disinscription_course/");
+    var to_add = req.body;
+
+    var course_id = to_add.course_id;
+    var user_id = to_add.user_id;
+
+    var delete_query = "DELETE FROM course_users WHERE course_id = '" + course_id + "' AND user_id = '" + user_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il corso!]')
+        } else {
+            console.log('[Disiscrizione effettuata]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
+
 
 ///////////////////////////////////////
 ///                                 ///
@@ -709,6 +871,64 @@ app.post('/register/gym/', (req, res, next) => {
 
     });
 });
+
+app.get('/gym/get_all_data/:gym_id', (req, res) => {
+    console.log("Rispondo richiesta: /gym/get_all_data/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT * FROM gyms WHERE user_id = \'" + gym_id + "\';";
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+                var user_id = result.rows[0].user_id;
+                var vat_number = result.rows[0].vat_number;
+                var gym_name = result.rows[0].gym_name;
+                var gym_address = result.rows[0].gym_address;
+                var zip_code = result.rows[0].zip_code;
+                var pool = result.rows[0].pool;
+                var box_ring = result.rows[0].box_ring;
+                var aerobics = result.rows[0].aerobics;
+                var spa = result.rows[0].spa;
+                var wifi = result.rows[0].wifi;
+                var parking_area = result.rows[0].parking_area;
+                var personal_trainer_service = result.rows[0].personal_trainer_service;
+                var nutritionist_service = result.rows[0].nutritionist_service;
+                var impedance_balance = result.rows[0].impedance_balance;
+                var courses = result.rows[0].courses;
+                var showers = result.rows[0].showers;
+
+                res.statusCode = 200;
+                res.json({
+                    "user_id": user_id,
+                    "vat_number": vat_number,
+                    "gym_name": gym_name,
+                    "gym_address": gym_address,
+                    "zip_code": zip_code,
+                    "pool": pool,
+                    "box_ring": box_ring,
+                    "aerobics": aerobics,
+                    "spa": spa,
+                    "wifi": wifi,
+                    "parking_area": parking_area,
+                    "personal_trainer_service": personal_trainer_service,
+                    "nutritionist_service": nutritionist_service,
+                    "impedance_balance": impedance_balance,
+                    "courses": courses,
+                    "showers": showers
+                });
+                res.end();
+                console.log('[GET GYM DATA OK]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET DATA ERROR]', err);
+            }
+        }
+    });
+})
 
 app.post('/gym/update_hours/', (req, res, next) => {
     console.log("Rispondo richiesta:'/gym/update_hours/");
@@ -1196,6 +1416,90 @@ app.get('/gym/get_new_nutritionists/:gym_id', (req, res, next) => {
     });
 })
 
+app.post('/gym/insert_course/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/insert_course/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+    var trainer_id = to_add.trainer_id;
+    var description = to_add.description;
+    var title = to_add.title;
+    var category = to_add.category;
+    var start_date = to_add.start_date;
+    var end_date = to_add.end_date;
+    var max_persons = to_add.max_persons;
+
+
+    var query = "INSERT INTO courses (gym_id, trainer_id, description, title, category, start_date, end_date, max_persons) VALUES ('" + gym_id + "', '" + trainer_id + "', '" + description + "','" + title + "','" + category + "',TO_DATE('" + start_date + "', 'DD/MM/YYYY'), TO_DATE('" + end_date + "', 'DD/MM/YYYY'), '" + max_persons + "');";
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel creare il corso!]', err);
+        } else {
+
+			res.statusCode = 200;
+			res.end();
+			console.log('[Corso aggiunto]');
+
+        }
+
+    });
+});
+
+app.get('/gym/get_courses/:gym_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/get_courses/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT course_id, name, lastname, description, title, category, start_date, end_date, max_persons FROM courses AS C JOIN users AS U ON C.trainer_id = U.user_id WHERE gym_id = '" + gym_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+					var course_id = result.rows[i].course_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var description = result.rows[i].description;
+                    var title = result.rows[i].title;
+                    var category = result.rows[i].category;
+                    var start_date = result.rows[i].start_date;
+					var end_date = result.rows[i].end_date;
+                    var max_persons = result.rows[i].max_persons;
+
+                    var tmp = {
+						"course_id": course_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "description": description,
+                        "title": title,
+                        "category": category,
+						"start_date": start_date,
+                        "end_date": end_date,
+                        "max_persons": max_persons
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_courses SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
 app.post('/customer/insert_completed_training_day/', (req, res, next) => {
     console.log("Rispondo richiesta:'/customer/insert_completed_training_day/");
     var to_add = req.body;
@@ -1219,6 +1523,142 @@ app.post('/customer/insert_completed_training_day/', (req, res, next) => {
     });
 })
 
+app.get('/gym/send_del_course_notification/:course_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/send_del_course_notification/:course_id");
+    var course_id = req.params.course_id;
+    var select_query = "SELECT U.user_id, C.title FROM course_users AS U JOIN courses as C ON U.course_id = C.course_id WHERE U.course_id = '" + course_id + "';";
+    con.query(select_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore prendere gli user del corso!]',err)
+        } else {
+            if (result.rowCount > 0) {
+                var title = result.rows[0].title;
+                // MANDO NOTIFICA A
+                for (var i = 0; i < result.rowCount; i++) {
+                    var user_id = result.rows[i].user_id;
+                    var insert_notification = "INSERT INTO notifications (notification_type, text, user_id ) VALUES ( '10', 'Il tuo corso: "+title+" è stato cancellato',  '" + user_id + "');";
+                    con.query(insert_notification, function (err, result, fields) {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.end();
+                            console.log('[Errore nel cancellare il corso!]');
+                        }
+                    });
+                    console.log(user_id + " " + course_id);
+                    var delete_course_users = "DELETE FROM course_users WHERE user_id =  '" + user_id + "' AND course_id = '" + course_id + "';";
+                    con.query(delete_course_users, function (err, result, fields) {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.end();
+                            console.log('[Errore nel cancellare gli user dal corso!]');
+                        }
+                    });
+                }
+                var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
+                con.query(delete_query, function (err, result, fields) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log('[Errore nel cancellare il corso!]', err);
+                    }
+                    console.log('[Corso eliminato]');
+
+                });
+                res.statusCode = 200;
+                res.end();
+                console.log('[GET gym_courses SUCCESS]');
+            } else {
+                var delete_query = "DELETE FROM courses WHERE course_id = '" + course_id + "';";
+                con.query(delete_query, function (err, result, fields) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log('[Errore nel cancellare il corso!]', err);
+                    }
+                });
+                console.log('[Corso eliminato]');
+                res.statusCode = 200;
+                res.end();
+                console.log('[GET gym_courses SUCCESS]');
+            }
+        }
+    });
+
+
+
+
+
+
+});
+
+app.get('/gym/get_customers/:gym_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/get_customers/:gym_id");
+    var gym_id = req.params.gym_id;
+    var query = "SELECT U.user_id, name, lastname, birthdate , email FROM gym_customers AS G JOIN customers AS C ON G.user_id = C.user_id JOIN users AS U ON C.user_id = U.user_id WHERE gym_id = '" + gym_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+					var user_id = result.rows[i].user_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var birthdate = result.rows[i].birthdate;
+                    var email = result.rows[i].email;
+
+                    var tmp = {
+						"user_id": user_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "birthdate": birthdate,
+                        "email": email
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET gym_customers SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+app.post('/gym/delete_gym_customer/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/gym/delete_gym_customer/");
+    var to_add = req.body;
+
+    var gym_id = to_add.gym_id;
+    var user_id = to_add.user_id;
+
+    var delete_query = "DELETE FROM gym_customers WHERE gym_id = '" + gym_id + "' AND user_id = '" + user_id + "';";
+    con.query(delete_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[Errore nel cancellare il CUSTOMER!]')
+        } else {
+            console.log('[Customer eliminato dai propri clienti]');
+            res.statusCode = 200;
+            res.end();
+        }
+
+    });
+});
 ///////////////////////////////////////
 ///                                 ///
 ///            TRAINER              ///
@@ -1506,6 +1946,210 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
     });
 });
 
+app.get('/trainer/get_customers/:trainer_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/get_customers/:trainer_id");
+    var trainer_id = req.params.trainer_id;
+    var query = "SELECT U.user_id, U.name, U.lastname, U.email , U.birthdate FROM users U JOIN gym_customers C ON U.user_id = C.user_id JOIN gym_trainers T ON C.gym_id = T.gym_id WHERE T.user_id  = '" + trainer_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+					var user_id = result.rows[i].user_id;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+                    var birthdate = result.rows[i].birthdate;
+                    var email = result.rows[i].email;
+
+                    var tmp = {
+						"user_id": user_id,
+                        "name": name,
+                        "lastname": lastname,
+                        "birthdate": birthdate,
+                        "email": email
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET trainer_customer SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/get_training_sheets_customer/:user_id");
+    var user_id = req.params.user_id;
+    var query = "SELECT T.*, U.name, U.lastname FROM training_sheets T JOIN users U ON T.trainer_id = U.user_id WHERE customer_id = '" + user_id + "';";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+					var training_sheet_id = result.rows[i].training_sheet_id;
+                    var customer_id = result.rows[i].customer_id;
+                    var trainer_id = result.rows[i].trainer_id;
+                    var creation_date = result.rows[i].creation_date;
+                    var title = result.rows[i].title;
+                    var description = result.rows[i].description;
+                    var number_of_days = result.rows[i].number_of_days;
+                    var strength = result.rows[i].strength;
+                    var name = result.rows[i].name;
+                    var lastname = result.rows[i].lastname;
+
+                    var tmp = {
+						"training_sheet_id": training_sheet_id,
+                        "customer_id": customer_id,
+                        "trainer_id": trainer_id,
+                        "creation_date": creation_date,
+                        "title": title,
+                        "description": description,
+                        "number_of_days": number_of_days,
+                        "strength": strength,
+                        "name": name,
+                        "lastname": lastname
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET training_sheet_customer SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+app.post('/trainer/create_training_sheet/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/create_training_sheet/");
+    var to_add = req.body;
+
+    var customer_id = to_add.customer_id;
+    var trainer_id = to_add.trainer_id;
+    var creation_date = to_add.creation_date;
+    var title = to_add.title;
+    var description = to_add.description;
+    var number_of_days = to_add.number_of_days;
+    var strength = 50;
+
+    var user_query = "INSERT INTO training_sheets (customer_id, trainer_id, creation_date, title, description, number_of_days, strength) VALUES ('" + customer_id + "','" + trainer_id + "',TO_DATE('" + creation_date + "', 'DD/MM/YYYY'),'" + title + "','" + description + "','" + number_of_days + "','" + strength + "') RETURNING training_sheet_id;";
+    con.query(user_query, function(err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            var training_sheet_id = result.rows[0].training_sheet_id;
+            //SUCCESS FINALE
+            for (var i = 1; i <= number_of_days; i++) {
+                var add_query = "INSERT INTO training_days VALUES ('" + training_sheet_id + "', '" + i + "');";
+                con.query(add_query, function(err, result, fields) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log('[PostgreSQL ERROR]', err);
+                    }
+                });
+            }
+            res.statusCode = 200;
+            res.json({
+                "training_sheet_id": training_sheet_id
+            });
+            res.end();
+            console.log('[Training sheet creato]');
+
+        }
+    });
+})
+
+app.get('/trainer/get_exercises/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/get_exercises/");
+    var user_id = req.params.user_id;
+    var query = "SELECT * FROM exercises ";
+
+    con.query(query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            if (result.rowCount > 0) {
+
+                var j_arr = [];
+
+                for (var i = 0; i < result.rowCount; i++) {
+                    var exercise_id = result.rows[i].exercise_id;
+                    var name = result.rows[i].name;
+
+
+                    var tmp = {
+                        "exercise_id": exercise_id,
+                        "name": name
+                    };
+
+                    j_arr.push(tmp);
+                }
+                res.statusCode = 200;
+                res.json(j_arr);
+                res.end();
+                console.log('[GET exercises SUCCESS]');
+            } else {
+                res.statusCode = 404;
+                res.end();
+                console.log('[GET ERROR : empty search]', err);
+            }
+        }
+    });
+})
+
+
+app.post('/trainer/insert_day_exercises/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/insert_day_exercises/");
+    var to_check = req.body;
+
+    var training_sheet_id = to_check.training_sheet_id;
+    var seq = to_check.seq;
+    var repetitions = to_check.repetitions;
+    var exercise_id = to_check.exercise_id;
+
+    var insert_day_exercises_query = "INSERT INTO day_exercises (training_sheet_id, seq, repetitions, exercise_id) VALUES ('" + training_sheet_id + "', '" + seq + "','" + repetitions + "','" + exercise_id + "');";
+    con.query(insert_day_exercises_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            res.statusCode = 200;
+            res.end();
+        }
+    });
+});
 ///////////////////////////////////////
 ///                                 ///
 ///         NUTRITIONIST            ///
