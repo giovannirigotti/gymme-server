@@ -11,7 +11,7 @@ const port = 4000;
 /////////////// Connessione al database.
 const con = new Client({
     user: "postgres",
-    password: "postgresql",
+    password: "cisco",
     host: '127.0.0.1',
     port: "5432",
     database: "gymme-db",
@@ -639,7 +639,7 @@ app.get('/customer/get_course_customers/:user_id', (req, res, next) => {
     var user_id = req.params.user_id;
     var query = "SELECT C.*, T.name, T.lastname FROM courses C join course_users CU on CU.course_id = C.course_id JOIN users T ON T.user_id = C.trainer_id  WHERE CU.user_id = '"+user_id+"';";
 
- 
+
     con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -700,7 +700,7 @@ app.get('/customer/get_disponible_course_customers/:user_id', (req, res, next) =
     var user_id = req.params.user_id;
     var query = "SELECT C.*, T.name, T.lastname FROM courses C  JOIN gyms G on G.user_id = C.gym_id  join gym_customers U on G.user_id = U.gym_id JOIN users T ON T.user_id = C.trainer_id  WHERE U.user_id = '"+user_id+"' except SELECT C.*, T.name, T.lastname FROM courses C join course_users CU on CU.course_id = C.course_id JOIN users T ON T.user_id = C.trainer_id WHERE CU.user_id = '"+user_id+"';";
 
- 
+
     con.query(query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
@@ -899,7 +899,7 @@ app.get('/gym/get_all_data/:gym_id', (req, res) => {
                 var impedance_balance = result.rows[0].impedance_balance;
                 var courses = result.rows[0].courses;
                 var showers = result.rows[0].showers;
-    
+
                 res.statusCode = 200;
                 res.json({
                     "user_id": user_id,
@@ -1427,11 +1427,11 @@ app.post('/gym/insert_course/', (req, res, next) => {
             res.end();
             console.log('[Errore nel creare il corso!]', err);
         } else {
-            
+
 			res.statusCode = 200;
 			res.end();
 			console.log('[Corso aggiunto]');
-                 
+
         }
 
     });
@@ -1900,7 +1900,7 @@ app.get('/trainer/get_training_sheets_customer/:user_id', (req, res, next) => {
                     var description = result.rows[i].description;
                     var number_of_days = result.rows[i].number_of_days;
                     var strength = result.rows[i].strength;
-                    var name = result.rows[i].name; 
+                    var name = result.rows[i].name;
                     var lastname = result.rows[i].lastname;
 
                     var tmp = {
@@ -1944,21 +1944,31 @@ app.post('/trainer/create_training_sheet/', (req, res, next) => {
     var strength = 50;
 
     var user_query = "INSERT INTO training_sheets (customer_id, trainer_id, creation_date, title, description, number_of_days, strength) VALUES ('" + customer_id + "','" + trainer_id + "',TO_DATE('" + creation_date + "', 'DD/MM/YYYY'),'" + title + "','" + description + "','" + number_of_days + "','" + strength + "') RETURNING training_sheet_id;";
-    con.query(user_query, function (err, result, fields) {
+    con.query(user_query, function(err, result, fields) {
         if (err) {
             res.statusCode = 500;
             res.end();
             console.log('[PostgreSQL ERROR]', err);
         } else {
-            //SUCCESS FINALE
             var training_sheet_id = result.rows[0].training_sheet_id;
-            res.statusCode = 200;
-            res.json(
-                {
-                    "training_sheet_id": training_sheet_id
+            //SUCCESS FINALE
+            for (var i = 1; i <= number_of_days; i++) {
+                var add_query = "INSERT INTO training_days VALUES ('" + training_sheet_id + "', '" + i + "');";
+                con.query(add_query, function(err, result, fields) {
+                    if (err) {
+                        res.statusCode = 500;
+                        res.end();
+                        console.log('[PostgreSQL ERROR]', err);
+                    }
                 });
+            }
+            res.statusCode = 200;
+            res.json({
+                "training_sheet_id": training_sheet_id
+            });
             res.end();
             console.log('[Training sheet creato]');
+
         }
     });
 })
@@ -2002,6 +2012,29 @@ app.get('/trainer/get_exercises/', (req, res, next) => {
         }
     });
 })
+
+
+app.post('/trainer/insert_day_exercises/', (req, res, next) => {
+    console.log("Rispondo richiesta:'/trainer/insert_day_exercises/");
+    var to_check = req.body;
+
+    var training_sheet_id = to_check.training_sheet_id;
+    var seq = to_check.seq;
+    var repetitions = to_check.repetitions;
+    var exercise_id = to_check.exercise_id;
+
+    var insert_day_exercises_query = "INSERT INTO day_exercises (training_sheet_id, seq, repetitions, exercise_id) VALUES ('" + training_sheet_id + "', '" + seq + "','" + repetitions + "','" + exercise_id + "');";
+    con.query(insert_day_exercises_query, function (err, result, fields) {
+        if (err) {
+            res.statusCode = 500;
+            res.end();
+            console.log('[PostgreSQL ERROR]', err);
+        } else {
+            res.statusCode = 200;
+            res.end();
+        }
+    });
+});
 ///////////////////////////////////////
 ///                                 ///
 ///         NUTRITIONIST            ///
