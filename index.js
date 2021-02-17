@@ -1794,7 +1794,9 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
     console.log("Rispondo richiesta: /trainer/get_training_sheet/:training_sheet_id");
     var trainingSheetId = req.params.training_sheet_id;
     var query = "SELECT training_sheet_id, customer_id, title, strength, TO_CHAR(creation_date, 'dd Mon YYYY') AS creation_date, title, " +
-        "description, number_of_days FROM training_sheets WHERE training_sheet_id = \'" + trainingSheetId + "\';";
+        "description, number_of_days, U.name FROM training_sheets AS S JOIN users AS U ON S.trainer_id=U.user_id WHERE training_sheet_id = \'" + trainingSheetId + "\';";
+
+    console.log("Is scheda: " + trainingSheetId);
 
     con.query(query, function (err, result, fields) {
         if (err) {
@@ -1807,6 +1809,7 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
                 var training_sheet_id = result.rows[0].training_sheet_id;
                 var customer_id = result.rows[0].customer_id;
                 var creation_date = result.rows[0].creation_date;
+                var trainer_name = result.rows[0].name;
                 var title = result.rows[0].title;
                 var strength = result.rows[0].strength;
                 var description = result.rows[0].description;
@@ -1835,8 +1838,6 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
                         }
 
 
-                        console.log(trainingDays);
-
                         var query3 = "SELECT seq, TO_CHAR(completion_date, 'dd-MM-YYYY') AS completion_date, user_comment FROM completed_training_days WHERE training_sheet_id = \'" + trainingSheetId + "\';";
                         con.query(query3, function (err3, result3, fields3) {
                             if (err3) {
@@ -1860,7 +1861,6 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
                                     completedDays.push(completedDay);
                                 }
 
-                                console.log(completedDays);
 
 
                                 var query4 = "SELECT day_exercise_id, training_sheet_id, seq, D.exercise_id, user_comment," +
@@ -1880,11 +1880,9 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
                                             var seq = result4.rows[i].seq;
                                             var exercise_id = result4.rows[i].exercise_id;
                                             var user_comment = result4.rows[i].user_comment;
-                                            var name = result4.rows[i].name;
-                                            var description = result4.rows[i].description;
+                                            var exercise_name = result4.rows[i].name;
+                                            var exercise_description = result4.rows[i].description;
                                             var repetitions = result4.rows[i].repetitions;
-
-
 
                                             var exercise = {
                                                 "day_exercise_id":day_exercise_id,
@@ -1893,24 +1891,20 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
                                                 "exercise_id":exercise_id,
                                                 "completion_date": completion_date,
                                                 "user_comment": user_comment,
-                                                "name": name,
-                                                "description":description,
+                                                "name": exercise_name,
+                                                "description":exercise_description,
                                                 "repetitions":repetitions
                                             }
                                             exercises.push(exercise);
                                         }
 
-
-
-
-
                                         var tmp = {
                                             "training_sheet_id": training_sheet_id,
                                             "customer_id": customer_id,
-                                            "trainer_name": name,
+                                            "trainer_name": trainer_name,
                                             "creation_date": creation_date,
                                             "title": title,
-                                            "description": description,
+                                            "description": description ,
                                             "number_of_days": number_of_days,
                                             "strength":strength,
                                             "training_days": trainingDays,
@@ -1922,7 +1916,7 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
                                         res.statusCode = 200;
                                         res.json(tmp);
                                         res.end();
-                                        console.log('[GET TRAINING SHEETS OK]');
+                                        console.log(tmp);
 
                                     }
                                 });
@@ -1938,7 +1932,7 @@ app.get('/trainer/get_training_sheet/:training_sheet_id', (req, res) => {
             } else {
                 res.statusCode = 404;
                 res.end();
-                console.log('[GET DATA ERROR]', err);
+                console.log('[NO DATA FOUND]', err);
             }
         }
 
